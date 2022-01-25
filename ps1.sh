@@ -30,6 +30,7 @@ get_this_dir() {
 #==========================
 #--------------------------
 
+# PS1: The Main Prompt.
 ps1_setup() {
   #--------------------------
   # Make sure we know where we are.
@@ -70,16 +71,56 @@ ps1_setup() {
   local vc_post="$(_ps1_vc_post_)"
   local vc_dynamic='$(_ps1_vc_)'
 
+  # ------------------------------
+  # Directory
+  # ------------------------------
+  # A separate line for the directory path, since it tends to be long?
+  # local ps1_dir="  ├📂 ${ps1_dir}"
+  local ps1_dir="  ├─ ${ps1_dir}"
+
   #--------------
   # Prompt: $> cmd.exe
   #--------------
-  local ps1_prompt=" └──┤${ps1_time}├─\$> "
+  local ps1_prompt="  └──┤${ps1_time}├─\$> "
 
   #--------------
   # Full PS1 Line
   #--------------
-  ps1_full_line="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${ps1_dir}${vc_pre}${vc_dynamic}${vc_post}\n ${ps1_prompt}"
-  ps2_full_line=" ${ps1_prompt}"
+  # # 2 lines, e.g.:
+  # #   > 20.04(focal):work@work-2021-lap:~/path/to/repositories/foobar (feature/123--ascii-art)
+  # #   >   └──┤16:39:52├─$>
+  # ps1_full_line="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${ps1_dir}${vc_pre}${vc_dynamic}${vc_post}\n ${ps1_prompt}"
+
+  # 3 lines, e.g.:
+  #   > 20.04(focal):work@work-2021-lap git(feature/prod-123--sftp-server)
+  #   >   ├─ ~/ocean/repositories/terraform/tier/development/customizer/sftp/ansible
+  #   >   └──┤15:08:57├─$>
+  ps1_full_line="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${vc_pre}${vc_dynamic}${vc_post}\n${ps1_dir}\n${ps1_prompt}"
+}
+
+
+# PS2: Used as prompt for incomplete commands.
+ps2_setup() {
+  # Continuation prompt (PS2): Same length as PS1.
+  #                "  └──┤HH:MM:SS├─\$> "
+  local ps2_prompt="     └──────────\$> "
+
+  ps2_full_line="${ps2_prompt}"
+}
+
+
+# PS3: Used as prompt for ~select~ statements.
+
+
+# PS4: Prefix for statements during execution trace (~set -x~).
+#   - Printed multiple times if multiple levels of indirection.
+#   - Default is: "+ "
+
+
+prompt_statement_setup() {
+  local dir="$1"
+  ps1_setup "$dir"
+  ps2_setup
 }
 
 

@@ -1,7 +1,7 @@
 
+_ps1_vc_symbol="⎇"
 
 _ps1_vc_ignored=()
-
 
 _ps1_vc_reduced=()
 
@@ -38,8 +38,8 @@ _ps1_vc_() {
       export GIT_PS1_SHOWUNTRACKEDFILES=curr_untracked
 
     else
-      # Be normal
-      local _ps1_vc_value="$(__git_ps1)"
+      # Be normal.
+      local _ps1_vc_value="${_ps1_vc_symbol}$(__git_ps1)"
     fi
 
   # else NOT a git repo and I don't have any other kind right now...

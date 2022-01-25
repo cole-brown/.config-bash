@@ -11,7 +11,7 @@ if [ "$color_prompt" = yes ]; then
     #---
 
     source "${_ps1_dir_this}/ps1.sh"
-    ps1_setup "${_ps1_dir_this}"
+    prompt_statement_setup "${_ps1_dir_this}"
 
     PS1="$(_config_spy_ps1_full_line)"
     PS2="$(_config_spy_ps2_full_line)"
@@ -19,3 +19,7 @@ if [ "$color_prompt" = yes ]; then
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
+
+# Local Variables:
+# mode: sh
+# End:
