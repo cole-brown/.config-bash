@@ -1,7 +1,6 @@
-
-#--------------------
+# ------------------------------------------------------------------------------
 # Helpers
-#--------------------
+# ------------------------------------------------------------------------------
 
 get_this_dir() {
   # Just in case someone did something stupid like sent in '~' instead of '$HOME'... >.>
@@ -24,110 +23,161 @@ get_this_dir() {
 }
 
 
-#--------------------------
-#==========================
-#      -- Function --
-#==========================
-#--------------------------
+# ------------------------------------------------------------------------------
+# ==============================================================================
+#                                -- Function --
+# ==============================================================================
+# ------------------------------------------------------------------------------
 
-# PS1: The Main Prompt.
-ps1_setup() {
-  #--------------------------
+# ------------------------------
+# Import Functions and such.
+# ------------------------------
+ps_import() {
+  # ---
   # Make sure we know where we are.
-  #--------------------------
+  # ---
   if ! get_this_dir "$1"; then
     return $?
   fi
   local here="$this_dir"
 
-  #--------------------------
+  # ---
   # PS1 Command Prompt Stuff.
-  #--------------------------
+  # ---
 
-  #--------------
+  # ---
   # Colors: De-uglifying Color Codes
-  #--------------
+  # ---
   source "${here}/_colors.sh"
   _colors_setup "$here"
 
-  #--------------
+  # ---
   # OS
-  #--------------
+  # ---
   source "${here}/_os.sh"
   _os_setup "$here"
 
-  #--------------
+  # ---
   # About Me & Environment
-  #--------------
+  # ---
   source "${here}/_usr_env.sh"
   _usr_env_setup "$here"
 
-  #--------------
+  # ---
   # Version Control
-  #--------------
+  # ---
   source "${here}/_vc.sh"
   _vc_setup "$here"
+}
+
+# ------------------------------
+# PS1: Variables for ~prompt_command~ to fill for PS1.
+# ------------------------------
+
+declare ps1_exit_status=""
+export ps1_exit_status
+
+# ------------------------------
+# PS1: The Main Prompt.
+# ------------------------------
+ps1_setup() {
+  # ------------------------------
+  # Info about What Just Happened
+  # ------------------------------
+  # `ps1_exit_status` Will be set in ~prompt_command~
+  local ps1_entry_exit="${ps1_color_red}"'${ps1_exit_status}'"${ps1_color_reset}"
+  local ps1_entry_timestamp="◷ ${ps1_datetime}"
+  # Maybe use this for timing commands? "⧗hh:mm:ss.mmm"
+
+  #--------------------------
+  # Version Control
+  #--------------------------
   local vc_pre="$(_ps1_vc_pre_)"
   local vc_post="$(_ps1_vc_post_)"
   local vc_dynamic='$(_ps1_vc_)'
+  local ps1_entry_vc="${vc_pre}${vc_dynamic}${vc_post}"
 
   # ------------------------------
   # Directory
   # ------------------------------
   # A separate line for the directory path, since it tends to be long?
-  # local ps1_dir="  ├📂 ${ps1_dir}"
-  local ps1_dir="  ├─ ${ps1_dir}"
+  # local ps1_dir='  ├📂 ${ps1_dir}'
+  local ps1_entry_dir="  ├─ ${ps1_dir}"
 
   #--------------
   # Prompt: $> cmd.exe
   #--------------
-  local ps1_prompt="  └──┤${ps1_time}├─\$> "
+  # local ps1_prompt='  └──┤${ps1_time}├─\$> '
+  local ps1_entry_prompt="  └─┤\$> "
 
-  #--------------
-  # Full PS1 Line
-  #--------------
-  # # 2 lines, e.g.:
-  # #   > 20.04(focal):work@work-2021-lap:~/path/to/repositories/foobar (feature/123--ascii-art)
-  # #   >   └──┤16:39:52├─$>
-  # ps1_full_line="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${ps1_dir}${vc_pre}${vc_dynamic}${vc_post}\n ${ps1_prompt}"
-
-  # 3 lines, e.g.:
-  #   > 20.04(focal):work@work-2021-lap git(feature/prod-123--sftp-server)
-  #   >   ├─ ~/ocean/repositories/terraform/tier/development/customizer/sftp/ansible
-  #   >   └──┤15:08:57├─$>
-  ps1_full_line="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${vc_pre}${vc_dynamic}${vc_post}\n${ps1_dir}\n${ps1_prompt}"
+  # ------------------------------
+  # Set up PS1 variable
+  # ------------------------------
+  ps1_line_1="${ps1_entry_exit}${ps1_entry_timestamp}"
+  ps1_line_2="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${ps1_entry_vc}"
+  ps1_line_3="${ps1_entry_dir}"
+  ps1_line_4="${ps1_entry_prompt}"
+  PS1="${ps1_line_1}\n${ps1_line_2}\n${ps1_line_3}\n${ps1_line_4}"
 }
 
 
+# ------------------------------
 # PS2: Used as prompt for incomplete commands.
+# ------------------------------
 ps2_setup() {
-  # Continuation prompt (PS2): Same length as PS1.
-  #                "  └──┤HH:MM:SS├─\$> "
-  local ps2_prompt="     └──────────\$> "
-
-  ps2_full_line="${ps2_prompt}"
+  # ------------------------------
+  # Set up PS2 variable
+  # ------------------------------
+  # Continuation prompt (PS2): Same length as HH.
+  # #                "  └──┤PS1:MM:SS├─\$> "
+  # local ps2_prompt="     └──────────\$> "
+  #                "  └─┤\$> "
+  local ps2_prompt="    └\$> "
+  PS2="${ps2_prompt}"
 }
 
 
+# ------------------------------
 # PS3: Used as prompt for ~select~ statements.
+# ------------------------------
 
 
+# ------------------------------
 # PS4: Prefix for statements during execution trace (~set -x~).
 #   - Printed multiple times if multiple levels of indirection.
 #   - Default is: "+ "
+# ------------------------------
 
 
+# ------------------------------
+# Set-Up / Init for Prompts.
+# ------------------------------
 prompt_statement_setup() {
   local dir="$1"
-  ps1_setup "$dir"
+  ps_import "$dir"
+  ps1_setup
   ps2_setup
 }
 
 
-_config_spy_ps1_full_line() {
-  echo "${ps1_full_line}"
-}
+# ------------------------------------------------------------------------------
+# Prompt Builder
+# ------------------------------------------------------------------------------
 
-_config_spy_ps2_full_line() {
-  echo "${ps2_full_line}"
+prompt_command() {
+  # ------------------------------
+  # First: Exit Code
+  # ------------------------------
+  # This needs to be first in order to get the last command's exit code.
+  local -i exit_code=$?
+
+  # ------------------------------
+  # Exit Code & Exit Time
+  # ------------------------------
+
+  if [[ $exit_code -eq 0 ]]; then
+    ps1_exit_status=""
+  else
+    ps1_exit_status="⚠「${exit_code}」"
+  fi
 }

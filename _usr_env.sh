@@ -1,5 +1,3 @@
-
-
 _usr_env_setup() {
   if ! get_this_dir $1; then
     echo "_usr_env.sh can't find _colors.sh"
@@ -15,5 +13,10 @@ _usr_env_setup() {
 
   ps1_user="${ps1_color_green}\u@\h${ps1_color_reset}"
   ps1_dir="${ps1_color_blue}\w${ps1_color_reset}"
+
+  # Date, Time, or Datetime
+  ps1_date="${ps1_color_green}\D{%F}${ps1_color_reset}"
   ps1_time="${ps1_color_green}\t${ps1_color_reset}"
+  # ISO-8601 with " " separator instead of "T".
+  ps1_datetime="${ps1_color_green}\D{%F %T}${ps1_color_reset}"
 }
