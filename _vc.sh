@@ -22,6 +22,7 @@ element_in () {
 
 _path_root_git=""
 path_root_git() {
+  _path_root_git=""
   # If a filepath was provided, use it's parent dir.
   local path="$1"
   if [[ -f "$path" ]]; then
@@ -43,11 +44,14 @@ path_root_git() {
 }
 
 
+_path_root_vc=""
 path_in_vc() {
   local path="$1"
+  _path_root_vc=""
 
   # In Git?
   if path_root_git "$path"; then
+  _path_root_vc="$_path_root_git"
     return 0
   fi
 
