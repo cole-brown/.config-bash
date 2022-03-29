@@ -51,6 +51,8 @@ ps_import() {
   source "${here}/_colors.sh"
   _colors_setup "$here"
 
+  source "${here}/_print.sh"
+
   # ---
   # OS
   # ---
@@ -104,6 +106,8 @@ ps1_output() {
   # ------------------------------
   # Output the prompt:
   # ------------------------------
+  # _ps1_print_line 40 ╘ ═ ╛ "${ps1_entry_exit}${ps1_entry_timestamp}"
+  # _ps1_print_line 40 ╒ ═ ╕ "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
   echo "${ps1_entry_exit}${ps1_entry_timestamp}"
   echo "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
   echo '$(ps1_output_dir)' # Needs eval'd every time.
@@ -123,16 +127,17 @@ ps1_output_dir() {
   # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
   # local ps1_entry_dir=" ${ps1_dir}"
 
-  # TODO: split into root, relative if in a VC dir.
-
   # ------------------------------
   # Output Dir/VC lines.
   # ------------------------------
   if path_in_vc "$PWD"; then
     #local ps1_path_root="$_path_root_vc"
+
+    # Split into root, relative if in a VC dir.
     local ps1_path_parent="$(dirname "$_path_root_vc")"
     local ps1_path_repo="$(basename "$_path_root_vc")"
     local ps1_path_rel="$(realpath --relative-to="$_path_root_vc" "$PWD")"
+
     # Repo's root path one color & relative path a second color.
     # Also, underline the repo name.
     echo -e "├┬ ${ansi_color_blue}${ps1_path_parent}/${ansi_format_underline}${ps1_path_repo}${ansi_format_underline_reset}${ansi_color_yellow}/${ps1_path_rel}${ansi_color_reset}"
