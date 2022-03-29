@@ -70,6 +70,7 @@ ps_import() {
   _vc_setup "$here"
 }
 
+
 # ------------------------------
 # PS1: Variables for ~prompt_command~ to fill for PS1.
 # ------------------------------
@@ -77,10 +78,19 @@ ps_import() {
 declare ps1_exit_status=""
 export ps1_exit_status
 
+ps1_entry_prompt="\$> "
+ps2_entry_prompt="$ps1_prompt"
+
+
 # ------------------------------
 # PS1: The Main Prompt.
 # ------------------------------
 ps1_setup() {
+  PS1="$(ps1_output)"
+}
+
+
+ps1_output() {
   # ------------------------------
   # Info about What Just Happened
   # ------------------------------
@@ -89,51 +99,46 @@ ps1_setup() {
   local ps1_entry_timestamp="◷ ${ps1_datetime}"
   # Maybe use this for timing commands? "⧗hh:mm:ss.mmm"
 
-  #--------------------------
+  # ------------------------------
   # Version Control
-  #--------------------------
-  local vc_pre="$(_ps1_vc_pre_)"
-  local vc_post="$(_ps1_vc_post_)"
-  local vc_dynamic='$(_ps1_vc_)'
-  local ps1_entry_vc="${vc_pre}${vc_dynamic}${vc_post}"
+  # ------------------------------
+  local ps1_entry_vc="$(_ps1_vc_pre_)"'$(_ps1_vc_)'"$(_ps1_vc_post_)"
 
   # ------------------------------
   # Directory
   # ------------------------------
-  # A separate line for the directory path, since it tends to be long?
-  # local ps1_dir='  ├📂 ${ps1_dir}'
-  local ps1_entry_dir="  ├─ ${ps1_dir}"
-
-  #--------------
-  # Prompt: $> cmd.exe
-  #--------------
-  # local ps1_prompt='  └──┤${ps1_time}├─\$> '
-  local ps1_entry_prompt="  └─┤\$> "
+  local ps1_entry_dir=" ${ps1_dir}"
 
   # ------------------------------
-  # Set up PS1 variable
+  # Output the prompt:
   # ------------------------------
-  ps1_line_1="${ps1_entry_exit}${ps1_entry_timestamp}"
-  ps1_line_2="${ps1_os}:${ps1_deb_chroot}${ps1_user}:${ps1_entry_vc}"
-  ps1_line_3="${ps1_entry_dir}"
-  ps1_line_4="${ps1_entry_prompt}"
-  PS1="${ps1_line_1}\n${ps1_line_2}\n${ps1_line_3}\n${ps1_line_4}"
+  echo "${ps1_entry_exit}${ps1_entry_timestamp}"
+  echo "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
+  if path_in_vc "$PWD"; then
+    echo "├┬${ps1_entry_dir}"
+    echo "│└─${ps1_entry_vc}"
+  else
+    echo "├─${ps1_entry_dir}"
+  fi
+  echo "└┤${ps1_entry_prompt}"
 }
-
 
 # ------------------------------
 # PS2: Used as prompt for incomplete commands.
 # ------------------------------
 ps2_setup() {
+  PS2="$(ps2_output)"
+}
+
+
+ps2_output() {
   # ------------------------------
   # Set up PS2 variable
   # ------------------------------
-  # Continuation prompt (PS2): Same length as HH.
-  # #                "  └──┤PS1:MM:SS├─\$> "
-  # local ps2_prompt="     └──────────\$> "
-  #                "  └─┤\$> "
-  local ps2_prompt="    └\$> "
-  PS2="${ps2_prompt}"
+  # PS1:
+  #    "..."
+  #    "└┤$[ps1_entry_prompt}"
+  echo " │${ps2_entry_prompt}"
 }
 
 
@@ -172,7 +177,7 @@ prompt_command() {
   local -i exit_code=$?
 
   # ------------------------------
-  # Exit Code & Exit Time
+  # Exit Code Status
   # ------------------------------
 
   if [[ $exit_code -eq 0 ]]; then

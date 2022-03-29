@@ -13,17 +13,58 @@ element_in () {
   local match="$1"
   # Shift match out of args and then for loop over the rest (the array).
   shift
-  for element; do [[ "$element" == "$match" ]] && return 0; done
+  for element; do
+    [[ "$element" == "$match" ]] && return 0
+  done
+  return 1
+}
+
+
+_path_root_git=""
+path_root_git() {
+  # If a filepath was provided, use it's parent dir.
+  local path="$1"
+  if [[ -f "$path" ]]; then
+    path="$(dirname "$path")"
+  fi
+
+  # Make sure we're in the dir.
+  pushd "$path" >/dev/null 2>&1
+
+  # Ask git for the root dir of the repo.
+  _path_root_git="$(git rev-parse --show-toplevel 2>/dev/null)"
+  local -i exitcode=$?
+
+  # Clean up.
+  popd >/dev/null 2>&1
+
+  # Return success/fail from git command.
+  return $exitcode
+}
+
+
+path_in_vc() {
+  local path="$1"
+
+  # In Git?
+  if path_root_git "$path"; then
+    return 0
+  fi
+
+  # Other version control systems checked here as needed.
+
+  # Not in any version control.
   return 1
 }
 
 
 _ps1_vc_() {
+  # Explicitly ignored?
   if element_in "$PWD" "${_ps1_vc_ignored[@]}"; then
     local _ps1_vc_value=" <ignored repo status>"
 
-  elif git rev-parse --git-dir > /dev/null 2>&1; then
-
+  # In Git?
+  elif path_root_git "$PWD"; then
     if element_in "$PWD" "${_ps1_vc_reduced[@]}"; then
       local curr_dirty=GIT_PS1_SHOWDIRTYSTATE
       local curr_untracked=GIT_PS1_SHOWUNTRACKEDFILES
@@ -42,7 +83,7 @@ _ps1_vc_() {
       local _ps1_vc_value="${_ps1_vc_symbol}$(__git_ps1)"
     fi
 
-  # else NOT a git repo and I don't have any other kind right now...
+  # Other version control systems checked here as needed.
   fi
 
   if [ ! -z "${_ps1_vc_value}" ]; then
