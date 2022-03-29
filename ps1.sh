@@ -123,16 +123,22 @@ ps1_output_dir() {
   # local ps1_entry_dir=" ${ps1_dir}"
 
   # TODO: split into root, relative if in a VC dir.
-  local ps1_entry_dir=" ${ansi_color_blue}${PWD}${ansi_color_reset}"
 
   # ------------------------------
   # Output Dir/VC lines.
   # ------------------------------
   if path_in_vc "$PWD"; then
-    echo -e "├┬${ps1_entry_dir}"
+    #local ps1_path_root="$_path_root_vc"
+    local ps1_path_parent="$(dirname "$_path_root_vc")"
+    local ps1_path_repo="$(basename "$_path_root_vc")"
+    local ps1_path_rel="$(realpath --relative-to="$_path_root_vc" "$PWD")"
+    # Repo's root path one color & relative path a second color.
+    # Also, underline the repo name.
+    echo -e "├┬ ${ansi_color_blue}${ps1_path_parent}/${ansi_format_underline}${ps1_path_repo}${ansi_format_underline_reset}${ansi_color_yellow}/${ps1_path_rel}${ansi_color_reset}"
     echo -e "│└─${ps1_entry_vc}"
   else
-    echo -e "├─${ps1_entry_dir}"
+    # All one color.
+    echo -e "├─ ${ansi_color_blue}${PWD}${ansi_color_reset}"
   fi
 }
 
