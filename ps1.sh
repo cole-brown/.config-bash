@@ -78,7 +78,8 @@ ps_import() {
 declare ps1_exit_status=""
 export ps1_exit_status
 
-ps1_entry_prompt="\$> "
+# ps1_entry_prompt="\$> "
+ps1_entry_prompt="❯ "
 ps2_entry_prompt="$ps1_prompt"
 
 
