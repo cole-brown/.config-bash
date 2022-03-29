@@ -53,4 +53,23 @@ _colors_setup() {
   ps1_color_blue="\[${ansi_color_blue}\]"
   ps1_color_purple="\[${ansi_color_purple}\]"
   ps1_color_teal="\[${ansi_color_teal}\]"
+
+  ps1_color_invert="\[${ansi_color_invert}\]"
+
+  ps1_format_reset="\[${ansi_format_reset}\]"
+  ps1_format_bold="\[${ansi_format_bold}\]"
+  ps1_format_dim="\[${ansi_format_dim}\]"
+  ps1_format_italic="\[${ansi_format_italic}\]"
+  ps1_format_underline="\[${ansi_format_underline}\]"
+  ps1_format_blink="\[${ansi_format_blink}\]"
+  ps1_format_hidden="\[${ansi_format_hidden}\]"
+  ps1_format_strikethrough="\[${ansi_format_strikethrough}\]"
+
+  ps1_format_bold_reset="\[${ansi_format_bold_reset}\]"
+  ps1_format_dim_reset="\[${ansi_format_dim_reset}\]"
+  ps1_format_italic_reset="\[${ansi_format_italic_reset}\]"
+  ps1_format_underline_reset="\[${ansi_format_underline_reset}\]"
+  ps1_format_blink_reset="\[${ansi_format_blink_reset}\]"
+  ps1_format_hidden_reset="\[${ansi_format_hidden_reset}\]"
+  ps1_format_strikethrough_reset="\[${ansi_format_strikethrough_reset}\]"
 }
