@@ -96,7 +96,7 @@ ps1_output() {
   # ------------------------------
   # `ps1_exit_status` Will be set in ~prompt_command~
   local ps1_entry_exit="${ps1_color_red}"'${ps1_exit_status}'"${ps1_color_reset}"
-  local ps1_entry_timestamp="◷ ${ps1_datetime}"
+  local ps1_entry_timestamp="◷[${ps1_datetime}]"
   # Maybe use this for timing commands? "⧗hh:mm:ss.mmm"
 
 
