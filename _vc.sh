@@ -94,12 +94,20 @@ _ps1_vc_() {
 
 
 _ps1_vc_pre_() {
-  echo "${ps1_color_yellow}"
+  # This works when it's used statically in PS1.
+  # echo "${ps1_color_yellow}"
+
+  # This is needed when called every prompt to build a PS1 string.
+  echo -e "${ansi_color_yellow}"
 }
 
 
 _ps1_vc_post_() {
-  echo "${ps1_color_reset}"
+  # This works when it's used statically in PS1.
+  # echo "${ps1_color_reset}"
+
+  # This is needed when called every prompt to build a PS1 string.
+  echo -e "${ansi_color_reset}"
 }
 
 

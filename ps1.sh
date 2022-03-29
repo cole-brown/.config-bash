@@ -99,29 +99,43 @@ ps1_output() {
   local ps1_entry_timestamp="◷ ${ps1_datetime}"
   # Maybe use this for timing commands? "⧗hh:mm:ss.mmm"
 
-  # ------------------------------
-  # Version Control
-  # ------------------------------
-  local ps1_entry_vc="$(_ps1_vc_pre_)"'$(_ps1_vc_)'"$(_ps1_vc_post_)"
-
-  # ------------------------------
-  # Directory
-  # ------------------------------
-  local ps1_entry_dir=" ${ps1_dir}"
 
   # ------------------------------
   # Output the prompt:
   # ------------------------------
   echo "${ps1_entry_exit}${ps1_entry_timestamp}"
   echo "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
-  if path_in_vc "$PWD"; then
-    echo "├┬${ps1_entry_dir}"
-    echo "│└─${ps1_entry_vc}"
-  else
-    echo "├─${ps1_entry_dir}"
-  fi
+  echo '$(ps1_output_dir)' # Needs eval'd every time.
   echo "└┤${ps1_entry_prompt}"
 }
+
+
+ps1_output_dir() {
+  # ------------------------------
+  # Version Control
+  # ------------------------------
+  local ps1_entry_vc="$(_ps1_vc_pre_)$(_ps1_vc_)$(_ps1_vc_post_)"
+
+  # ------------------------------
+  # Directory
+  # ------------------------------
+  # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
+  # local ps1_entry_dir=" ${ps1_dir}"
+
+  # TODO: split into root, relative if in a VC dir.
+  local ps1_entry_dir=" ${ansi_color_blue}${PWD}${ansi_color_reset}"
+
+  # ------------------------------
+  # Output Dir/VC lines.
+  # ------------------------------
+  if path_in_vc "$PWD"; then
+    echo -e "├┬${ps1_entry_dir}"
+    echo -e "│└─${ps1_entry_vc}"
+  else
+    echo -e "├─${ps1_entry_dir}"
+  fi
+}
+
 
 # ------------------------------
 # PS2: Used as prompt for incomplete commands.
