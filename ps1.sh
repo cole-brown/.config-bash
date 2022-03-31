@@ -1,4 +1,10 @@
 # ------------------------------------------------------------------------------
+# Constants & Variables
+# ------------------------------------------------------------------------------
+
+declare -i bap_ps1_max_width=80
+
+# ------------------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------------------
 
@@ -94,23 +100,89 @@ ps1_setup() {
 
 
 ps1_output() {
-  # ------------------------------
-  # Info about What Just Happened
-  # ------------------------------
-  # `ps1_exit_status` Will be set in ~prompt_command~
-  local ps1_entry_exit="${ps1_color_red}"'${ps1_exit_status}'"${ps1_color_reset}"
-  local ps1_entry_timestamp="◷[${ps1_datetime}]"
-  # Maybe use this for timing commands? "⧗hh:mm:ss.mmm"
 
+  # ------------------------------
+  # Build the prompt:
+  # ------------------------------
+
+  # ---
+  # Build Footer (exit code/timestamp/...).
+  # ---
+  # `ps1_exit_status` Will be set in ~prompt_command~
+  local ps1_entry_raw='${ps1_exit_status}'
+  local ps1_entry_fmt="${ps1_color_red}"'${ps1_exit_status}'"${ps1_color_reset}"
+
+  local ps1_line_footer_raw=""
+  local ps1_line_footer_fmt=""
+  if [[ ! -z "$ps1_line_footer_raw" ]]; then
+    ps1_line_footer_raw="${ps1_entry_raw} ═ "
+    ps1_line_footer_fmt="${ps1_entry_fmt} ═ "
+  fi
+
+  bap_env_timestamp
+  ps1_entry_raw="◷[${_bap_env_timestamp}]"
+  ps1_entry_fmt="◷[${ps1_color_green}${_bap_env_timestamp}${ps1_color_reset}]"
+  ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}"
+  ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}"
+
+  # TODO: Maybe use this for timing command durations? "⧗hh:mm:ss.mmm"
+
+  # ---
+  # Build Header (OS/CHROOT/USER/...).
+  # ---
+  # OS info.
+  ps1_entry_raw="${ps1_os}"
+  ps1_entry_fmt="${ps1_format_dim}${ps1_os}${ps1_format_dim_reset}"
+  # Start with entry and also separator character.
+  ps1_line_header_raw=" ${ps1_entry_raw} ═"
+  ps1_line_header_fmt=" ${ps1_entry_fmt} ═"
+
+  # Optional CHROOT info.
+  if [[ ! -z "${ps1_chroot}" ]]; then
+    ps1_entry_raw="${ps1_chroot}"
+    ps1_entry_fmt="${ps1_format_dim}${ps1_chroot}${ps1_format_dim_reset}"
+    # Append entry and also separator character.
+    ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} ="
+    ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} ="
+  fi
+
+  # User info.
+  bap_env_ident
+  ps1_entry_raw="${_bap_env_ident}"
+  ps1_entry_fmt="${ps1_color_green}${_bap_env_ident}${ps1_color_reset}"
+  # No separator - this is the last thing.
+  ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} "
+  ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} "
 
   # ------------------------------
   # Output the prompt:
   # ------------------------------
-  # _ps1_print_line 40 ╘ ═ ╛ "${ps1_entry_exit}${ps1_entry_timestamp}"
-  # _ps1_print_line 40 ╒ ═ ╕ "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
-  echo "${ps1_entry_exit}${ps1_entry_timestamp}"
-  echo "${ps1_os}:${ps1_deb_chroot}${ps1_user}"
+
+  # ---
+  # About previous command.
+  # ---
+  # Line 00: error code, timestamp
+  _ps1_print_line $bap_ps1_max_width ╘ ═ ╛ ${#ps1_line_footer_raw} "${ps1_line_footer_fmt}"
+  # echo "${ps1_entry_exit}${ps1_entry_timestamp}"
+
+  # ---
+  # Intermission
+  # ---
+  bap_print_centered $bap_ps1_max_width "╶─╼━╾─╴"
+
+  # ---
+  # Prompt for this command.
+  # ---
+
+  # Line 01: OS, user/host, etc.
+  # echo "${ps1_entry_os}:${ps1_entry_chroot}${ps1_user}"
+  # _ps1_print_line $bap_ps1_max_width ╒ ═ ╕ "${ps1_fmt_line}"
+  _ps1_print_line $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
+
+  # Line 02 (+03): Current Dir (+ Version Control Info)
   echo '$(ps1_output_dir)' # Needs eval'd every time.
+
+  # Line 04: Prompt.
   echo "└┤${ps1_entry_prompt}"
 }
 
@@ -125,7 +197,7 @@ ps1_output_dir() {
   # Directory
   # ------------------------------
   # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
-  # local ps1_entry_dir=" ${ps1_dir}"
+  # local ps1_entry_dir=" ${ps1_color_blue}${ps1_dir}${ps1_color_reset}"
 
   # ------------------------------
   # Output Dir/VC lines.
