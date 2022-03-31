@@ -9,37 +9,41 @@ _colors_setup() {
   # ------------------------------
   # ANSI Codes
   # ------------------------------
+  # These are all just the escape key, basically.
+  char_escape_oct="\033" # octal 33
+  char_escape_hex="\x1b" # hex   1b
+  char_escape="\e"
 
   # Colors
-  ansi_color_reset="\033[00m"
-  ansi_color_red="\033[0;31m"
-  ansi_color_green="\033[01;32m"
-  ansi_color_yellow="\033[0;33m"
-  ansi_color_blue="\033[01;34m"
-  ansi_color_purple="\033[0;35m"
-  ansi_color_teal="\033[0;36m"
+  ansi_color_reset="${char_escape}[00m"
+  ansi_color_red="${char_escape}[0;31m"
+  ansi_color_green="${char_escape}[01;32m"
+  ansi_color_yellow="${char_escape}[0;33m"
+  ansi_color_blue="${char_escape}[01;34m"
+  ansi_color_purple="${char_escape}[0;35m"
+  ansi_color_teal="${char_escape}[0;36m"
 
   # Inverts foreground and background colors.
   # AKA "reverse"
-  ansi_color_invert="\e[7m"
+  ansi_color_invert="${char_escape}[7m"
 
   # Text properties
-  ansi_format_reset="\e[0m"
-  ansi_format_bold="\e[1m"
-  ansi_format_dim="\e[2m"
-  ansi_format_italic="\e[3m"
-  ansi_format_underline="\e[4m"
-  ansi_format_blink="\e[5m"
-  ansi_format_hidden="\e[8m" # For e.g. passwords.
-  ansi_format_strikethrough="\e[9m"
+  ansi_format_reset="${char_escape}[0m"
+  ansi_format_bold="${char_escape}[1m"
+  ansi_format_dim="${char_escape}[2m"
+  ansi_format_italic="${char_escape}[3m"
+  ansi_format_underline="${char_escape}[4m"
+  ansi_format_blink="${char_escape}[5m"
+  ansi_format_hidden="${char_escape}[8m" # For e.g. passwords.
+  ansi_format_strikethrough="${char_escape}[9m"
 
-  ansi_format_bold_reset="\e[21m"
-  ansi_format_dim_reset="\e[22m"
-  ansi_format_italic_reset="\e[23m"
-  ansi_format_underline_reset="\e[24m"
-  ansi_format_blink_reset="\e[25m"
-  ansi_format_hidden_reset="\e[28m"
-  ansi_format_strikethrough_reset="\e[29m"
+  ansi_format_bold_reset="${char_escape}[21m"
+  ansi_format_dim_reset="${char_escape}[22m"
+  ansi_format_italic_reset="${char_escape}[23m"
+  ansi_format_underline_reset="${char_escape}[24m"
+  ansi_format_blink_reset="${char_escape}[25m"
+  ansi_format_hidden_reset="${char_escape}[28m"
+  ansi_format_strikethrough_reset="${char_escape}[29m"
 
 
   #--------------
@@ -73,3 +77,36 @@ _colors_setup() {
   ps1_format_hidden_reset="\[${ansi_format_hidden_reset}\]"
   ps1_format_strikethrough_reset="\[${ansi_format_strikethrough_reset}\]"
 }
+
+
+# Strip ANSI (and PS1) escape sequences from input string.
+_ansi_string_strip=""
+ansi_string_strip() {
+  _ansi_string_strip=""
+  local string="$@"
+
+  # No input == error.
+  if [[ -z "$string" ]]; then
+    return 1
+  fi
+
+  # Using [a-zA-Z], which is all escape sequences.
+  #
+  # If you want to restrict to just certain escape sequences:
+  # ----------------------------------------------
+  # Last escape sequence...
+  #   Character   Purpose
+  #   ---------   -------------------------------
+  #   m           Graphics Rendition Mode (including Color)
+  #   G           Horizontal cursor move
+  #   K           Horizontal deletion
+  #   H           New cursor position
+  #   F           Move cursor to previous n lines
+
+  # https://superuser.com/a/380778
+  #
+  # Search for ANSI escape sequences, replace with nothing.
+  _ansi_string_strip="$(echo -e "$string" | sed 's/\\[?\x1B\[[0-9;]*[a-zA-Z]//g')"
+  return $?
+}
+
