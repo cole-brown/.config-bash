@@ -103,10 +103,10 @@ _ps1_print_line_auto() {
     local msg="$@"
 
     # Strip ANSI escape sequences so we can get a count of the actual characters.
-    ansi_string_strip "$msg"
+    bap_ansi_strip "$msg"
 
     # Print line w/ stripped msg length.
-    _ps1_print_line $width "$corner_left" "$fill_char" "$corner_right" ${#_ansi_string_strip} "$msg"
+    _ps1_print_line $width "$corner_left" "$fill_char" "$corner_right" ${#_bap_ansi_strip} "$msg"
 }
 
 

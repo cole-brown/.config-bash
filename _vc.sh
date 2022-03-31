@@ -97,31 +97,14 @@ _ps1_vc_() {
 }
 
 
-_ps1_vc_pre_() {
-  # This works when it's used statically in PS1.
-  # echo "${ps1_color_yellow}"
-
-  # This is needed when called every prompt to build a PS1 string.
-  echo -e "${ansi_color_yellow}"
-}
-
-
-_ps1_vc_post_() {
-  # This works when it's used statically in PS1.
-  # echo "${ps1_color_reset}"
-
-  # This is needed when called every prompt to build a PS1 string.
-  echo -e "${ansi_color_reset}"
-}
-
 
 _vc_setup() {
   if ! get_this_dir $1; then
-    echo "_usr_env.sh can't find _colors.sh"
+    echo "_usr_env.sh can't find _ansi_codes.sh"
     return 1
   else
-    source "$this_dir/_colors.sh"
-    _colors_setup "$this_dir"
+    source "${this_dir}/_ansi_codes.sh"
+    bap_ansi_setup "$this_dir"
   fi
 
   #--------------

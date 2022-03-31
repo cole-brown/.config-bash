@@ -1,10 +1,10 @@
 _usr_env_setup() {
   if ! get_this_dir $1; then
-    echo "_usr_env.sh can't find _colors.sh"
+    echo "_usr_env.sh can't find _ansi_codes.sh"
     return 1
   else
-    source "$this_dir/_colors.sh"
-    _colors_setup "$this_dir"
+    source "${this_dir}/_ansi_codes.sh"
+    bap_ansi_setup "$this_dir"
   fi
 
   #--------------

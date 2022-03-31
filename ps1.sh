@@ -54,8 +54,8 @@ ps_import() {
   # ---
   # Colors: De-uglifying Color Codes
   # ---
-  source "${here}/_colors.sh"
-  _colors_setup "$here"
+  source "${here}/_ansi_codes.sh"
+  bap_ansi_setup "$here"
 
   source "${here}/_print.sh"
 
@@ -110,7 +110,7 @@ ps1_output() {
   # ---
   # `ps1_exit_status` Will be set in ~prompt_command~
   local ps1_entry_raw='${ps1_exit_status}'
-  local ps1_entry_fmt="${ps1_color_red}"'${ps1_exit_status}'"${ps1_color_reset}"
+  local ps1_entry_fmt="${bap_ps1_ansi_red}"'${ps1_exit_status}'"${bap_ps1_ansi_reset}"
 
   local ps1_line_footer_raw=""
   local ps1_line_footer_fmt=""
@@ -121,7 +121,7 @@ ps1_output() {
 
   bap_env_timestamp
   ps1_entry_raw="◷[${_bap_env_timestamp}]"
-  ps1_entry_fmt="◷[${ps1_color_green}${_bap_env_timestamp}${ps1_color_reset}]"
+  ps1_entry_fmt="◷[${bap_ps1_ansi_green}${_bap_env_timestamp}${bap_ps1_ansi_reset}]"
   ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}"
   ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}"
 
@@ -132,7 +132,7 @@ ps1_output() {
   # ---
   # OS info.
   ps1_entry_raw="${ps1_os}"
-  ps1_entry_fmt="${ps1_format_dim}${ps1_os}${ps1_format_dim_reset}"
+  ps1_entry_fmt="${bap_ps1_ansi_dim}${ps1_os}${bap_ps1_ansi_dim_reset}"
   # Start with entry and also separator character.
   ps1_line_header_raw=" ${ps1_entry_raw} ═"
   ps1_line_header_fmt=" ${ps1_entry_fmt} ═"
@@ -140,7 +140,7 @@ ps1_output() {
   # Optional CHROOT info.
   if [[ ! -z "${ps1_chroot}" ]]; then
     ps1_entry_raw="${ps1_chroot}"
-    ps1_entry_fmt="${ps1_format_dim}${ps1_chroot}${ps1_format_dim_reset}"
+    ps1_entry_fmt="${bap_ps1_ansi_dim}${ps1_chroot}${bap_ps1_ansi_dim_reset}"
     # Append entry and also separator character.
     ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} ="
     ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} ="
@@ -149,7 +149,7 @@ ps1_output() {
   # User info.
   bap_env_ident
   ps1_entry_raw="${_bap_env_ident}"
-  ps1_entry_fmt="${ps1_color_green}${_bap_env_ident}${ps1_color_reset}"
+  ps1_entry_fmt="${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
   # No separator - this is the last thing.
   ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} "
   ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} "
@@ -191,13 +191,13 @@ ps1_output_dir() {
   # ------------------------------
   # Version Control
   # ------------------------------
-  local ps1_entry_vc="$(_ps1_vc_pre_)$(_ps1_vc_)$(_ps1_vc_post_)"
+  local ps1_entry_vc="${bap_ansi_yellow}$(_ps1_vc_)${bap_ansi_reset}"
 
   # ------------------------------
   # Directory
   # ------------------------------
   # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
-  # local ps1_entry_dir=" ${ps1_color_blue}${ps1_dir}${ps1_color_reset}"
+  # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${ps1_dir}${bap_ps1_ansi_reset}"
 
   # ------------------------------
   # Output Dir/VC lines.
@@ -212,11 +212,11 @@ ps1_output_dir() {
 
     # Repo's root path one color & relative path a second color.
     # Also, underline the repo name.
-    echo -e "├┬ ${ansi_color_blue}${ps1_path_parent}/${ansi_format_underline}${ps1_path_repo}${ansi_format_underline_reset}${ansi_color_yellow}/${ps1_path_rel}${ansi_color_reset}"
+    echo -e "├┬ ${bap_ansi_blue}${ps1_path_parent}/${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}"
     echo -e "│└─${ps1_entry_vc}"
   else
     # All one color.
-    echo -e "├─ ${ansi_color_blue}${PWD}${ansi_color_reset}"
+    echo -e "├─ ${bap_ansi_blue}${PWD}${bap_ansi_reset}"
   fi
 }
 
