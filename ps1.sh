@@ -131,16 +131,16 @@ ps1_output() {
   # Build Header (OS/CHROOT/USER/...).
   # ---
   # OS info.
-  ps1_entry_raw="${ps1_os}"
-  ps1_entry_fmt="${bap_ps1_ansi_dim}${ps1_os}${bap_ps1_ansi_dim_reset}"
+  ps1_entry_raw="${bap_ps1_os}"
+  ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_os}${bap_ps1_ansi_dim_reset}"
   # Start with entry and also separator character.
   ps1_line_header_raw=" ${ps1_entry_raw} ═"
   ps1_line_header_fmt=" ${ps1_entry_fmt} ═"
 
   # Optional CHROOT info.
-  if [[ ! -z "${ps1_chroot}" ]]; then
-    ps1_entry_raw="${ps1_chroot}"
-    ps1_entry_fmt="${bap_ps1_ansi_dim}${ps1_chroot}${bap_ps1_ansi_dim_reset}"
+  if [[ ! -z "${bap_ps1_chroot}" ]]; then
+    ps1_entry_raw="${bap_ps1_chroot}"
+    ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_chroot}${bap_ps1_ansi_dim_reset}"
     # Append entry and also separator character.
     ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} ="
     ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} ="

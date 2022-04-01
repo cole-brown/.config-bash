@@ -1,12 +1,12 @@
 
-_os_setup() {
+bap_os_setup() {
   #--------------
   # OS
   #--------------
   eval $(source /etc/os-release;
-         echo ps1_os_version_id="$VERSION_ID";
-         echo ps1_os_version_name="$VERSION_CODENAME";)
+         echo bap_ps1_os_version_id="$VERSION_ID";
+         echo bap_ps1_os_version_name="$VERSION_CODENAME";)
 
-  ps1_chroot="${debian_chroot:+($debian_chroot)}"
-  ps1_os="${ps1_os_version_id}(${ps1_os_version_name})"
+  bap_ps1_chroot="${debian_chroot:+($debian_chroot)}"
+  bap_ps1_os="${bap_ps1_os_version_id}(${bap_ps1_os_version_name})"
 }
