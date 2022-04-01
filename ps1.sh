@@ -69,7 +69,7 @@ ps_import() {
   # About Me & Environment
   # ---
   source "${here}/_usr_env.sh"
-  _usr_env_setup "$here"
+  bap_usr_env_setup "$here"
 
   # ---
   # Version Control
@@ -175,7 +175,7 @@ ps1_output() {
   # ---
 
   # Line 01: OS, user/host, etc.
-  # echo "${ps1_entry_os}:${ps1_entry_chroot}${ps1_user}"
+  # echo "${ps1_entry_os}:${ps1_entry_chroot}${bap_ps1_user}"
   # bap_print_headline $bap_ps1_max_width ╒ ═ ╕ "${ps1_fmt_line}"
   bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
 
@@ -197,7 +197,7 @@ ps1_output_dir() {
   # Directory
   # ------------------------------
   # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
-  # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${ps1_dir}${bap_ps1_ansi_reset}"
+  # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${bap_ps1_dir}${bap_ps1_ansi_reset}"
 
   # ------------------------------
   # Output Dir/VC lines.

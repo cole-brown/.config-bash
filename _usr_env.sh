@@ -1,4 +1,4 @@
-_usr_env_setup() {
+bap_usr_env_setup() {
   if ! get_this_dir $1; then
     echo "_usr_env.sh can't find _ansi_codes.sh"
     return 1
@@ -14,14 +14,14 @@ _usr_env_setup() {
   #   https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
   #   https://ss64.com/bash/syntax-prompt.html
 
-  ps1_user="\u@\h"
-  ps1_dir="\w"
+  bap_ps1_user="\u@\h"
+  bap_ps1_dir="\w"
 
   # Date, Time, or Datetime
-  ps1_date="\D{%F}"
-  ps1_time="\t"
+  bap_ps1_date="\D{%F}"
+  bap_ps1_time="\t"
   # ISO-8601 with " " separator instead of "T".
-  ps1_datetime="\D{%F %T}"
+  bap_ps1_datetime="\D{%F %T}"
 }
 
 
