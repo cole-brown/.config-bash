@@ -97,9 +97,9 @@ bap_output_ps1() {
 
   local ps1_line_footer_raw=""
   local ps1_line_footer_fmt=""
-  if [[ ! -z "$ps1_line_footer_raw" ]]; then
-    ps1_line_footer_raw="${ps1_entry_raw}${_bap_print_text_props} ═ ${_bap_print_text_props_reset}"
-    ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props} ═ ${_bap_print_text_props_reset}"
+  if [[ ! -z "$ps1_entry_raw" ]]; then
+    ps1_line_footer_raw="${ps1_entry_raw}${_bap_print_text_props}═${_bap_print_text_props_reset}"
+    ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props}═${_bap_print_text_props_reset}"
   fi
 
   bap_env_timestamp
