@@ -75,7 +75,7 @@ ps_import() {
   # Version Control
   # ---
   source "${here}/_vc.sh"
-  _vc_setup "$here"
+  bap_vc_setup "$here"
 }
 
 
@@ -191,7 +191,7 @@ ps1_output_dir() {
   # ------------------------------
   # Version Control
   # ------------------------------
-  local ps1_entry_vc="${bap_ansi_yellow}$(_ps1_vc_)${bap_ansi_reset}"
+  local ps1_entry_vc="${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}"
 
   # ------------------------------
   # Directory
@@ -202,7 +202,7 @@ ps1_output_dir() {
   # ------------------------------
   # Output Dir/VC lines.
   # ------------------------------
-  if path_in_vc "$PWD"; then
+  if bap_path_in_vc "$PWD"; then
     #local ps1_path_root="$_path_root_vc"
 
     # Split into root, relative if in a VC dir.
