@@ -5,28 +5,9 @@
 declare -i bap_ps1_max_width=80
 
 # ------------------------------------------------------------------------------
-# Helpers
+# Constants & Variables
 # ------------------------------------------------------------------------------
 
-get_this_dir() {
-  # Just in case someone did something stupid like sent in '~' instead of '$HOME'... >.>
-  local input_dir="$1"
-  if [ ! -d "$input_dir" ]; then
-    echo "Not a directory?: $input_dir"
-    echo "If there's a tilde ('~') in there, use \$HOME maybe."
-    echo "Need dir of ps1.sh for ps1_setup()"
-    return 1
-  fi
-
-  if [ ! -f "${input_dir}/ps1.sh" ]; then
-    echo "Don't see my source here..."
-    echo "No '${input_dir}/ps1.sh' file?"
-    return 1
-  fi
-
-  this_dir="$input_dir"
-  return 0
-}
 
 
 # ------------------------------------------------------------------------------
