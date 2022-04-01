@@ -43,6 +43,9 @@ bap_import() {
   bap_ansi_setup "$_bap_script_dir"
 
   source "${_bap_script_dir}/_print.sh"
+  if ! bap_print_setup "$_bap_script_dir"; then
+    return $?
+  fi
 
   # ---
   # OS
@@ -90,18 +93,18 @@ bap_output_ps1() {
   # ---
   # `bap_prev_cmd_exit_status` Will be set in ~prompt_command~
   local ps1_entry_raw='${bap_prev_cmd_exit_status}'
-  local ps1_entry_fmt="${bap_ps1_ansi_red}"'${bap_prev_cmd_exit_status}'"${bap_ps1_ansi_reset}"
+  local ps1_entry_fmt="${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"'${bap_prev_cmd_exit_status}'"${bap_ps1_ansi_reset}"
 
   local ps1_line_footer_raw=""
   local ps1_line_footer_fmt=""
   if [[ ! -z "$ps1_line_footer_raw" ]]; then
-    ps1_line_footer_raw="${ps1_entry_raw} ═ "
-    ps1_line_footer_fmt="${ps1_entry_fmt} ═ "
+    ps1_line_footer_raw="${ps1_entry_raw}${_bap_print_text_props} ═ ${_bap_print_text_props_reset}"
+    ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props} ═ ${_bap_print_text_props_reset}"
   fi
 
   bap_env_timestamp
   ps1_entry_raw="◷[${_bap_env_timestamp}]"
-  ps1_entry_fmt="◷[${bap_ps1_ansi_green}${_bap_env_timestamp}${bap_ps1_ansi_reset}]"
+  ps1_entry_fmt="${_bap_print_text_props}◷[${_bap_print_text_props_reset}${bap_ps1_ansi_green}${_bap_env_timestamp}${bap_ps1_ansi_reset}${_bap_print_text_props}]"
   ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}"
   ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}"
 
@@ -115,7 +118,7 @@ bap_output_ps1() {
   ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_os}${bap_ps1_ansi_dim_reset}"
   # Start with entry and also separator character.
   ps1_line_header_raw=" ${ps1_entry_raw} ═"
-  ps1_line_header_fmt=" ${ps1_entry_fmt} ═"
+  ps1_line_header_fmt=" ${ps1_entry_fmt}${_bap_print_text_props} ═${_bap_print_text_props_reset}"
 
   # Optional CHROOT info.
   if [[ ! -z "${bap_ps1_chroot}" ]]; then
@@ -123,7 +126,7 @@ bap_output_ps1() {
     ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_chroot}${bap_ps1_ansi_dim_reset}"
     # Append entry and also separator character.
     ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} ="
-    ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} ="
+    ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt}${_bap_print_text_props} =${_bap_print_text_props_reset}"
   fi
 
   # User info.
@@ -141,6 +144,9 @@ bap_output_ps1() {
   # ---
   # About previous command.
   # ---
+  # Line -1: Blank line to separate out teh actual command a bit.
+  echo
+
   # Line 00: error code, timestamp
   bap_print_headline $bap_ps1_max_width ╘ ═ ╛ ${#ps1_line_footer_raw} "${ps1_line_footer_fmt}"
   # echo "${ps1_entry_exit}${ps1_entry_timestamp}"
@@ -163,7 +169,7 @@ bap_output_ps1() {
   echo '$(bap_output_ps1_dir)' # Needs eval'd every time.
 
   # Line 04: Prompt.
-  echo "└┤${bap_ps1_entry_prompt}"
+  echo "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
 }
 
 
@@ -192,11 +198,11 @@ bap_output_ps1_dir() {
 
     # Repo's root path one color & relative path a second color.
     # Also, underline the repo name.
-    echo -e "├┬ ${bap_ansi_blue}${ps1_path_parent}/${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}"
-    echo -e "│└─${ps1_entry_vc}"
+    echo -e "${_bap_print_text_props}├┬ ${_bap_print_text_props_reset}${bap_ansi_blue}${ps1_path_parent}/${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}"
+    echo -e "${_bap_print_text_props}│└─${_bap_print_text_props_reset}${ps1_entry_vc}"
   else
     # All one color.
-    echo -e "├─ ${bap_ansi_blue}${PWD}${bap_ansi_reset}"
+    echo -e "${_bap_print_text_props}├─ ${_bap_print_text_props_reset}${bap_ansi_blue}${PWD}${bap_ansi_reset}"
   fi
 }
 
@@ -215,8 +221,8 @@ bap_output_ps2() {
   # ------------------------------
   # PS1:
   #    "..."
-  #    "└┤$[bap_ps1_entry_prompt}"
-  echo " │${bap_ps2_entry_prompt}"
+  #    "${_bap_print_text_props}└┤${_bap_print_text_props_reset}$[bap_ps1_entry_prompt}"
+  echo "${_bap_print_text_props} │${_bap_print_text_props_reset}${bap_ps2_entry_prompt}"
 }
 
 

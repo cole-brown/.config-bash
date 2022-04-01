@@ -11,6 +11,9 @@
 # Just a big buffer of spaces to trim down to what we want.
 bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 
+# 0 == false, 1 == true
+declare -i bap_lines_dim=1
+
 
 # ------------------------------------------------------------------------------
 # Terminal Info
@@ -42,6 +45,19 @@ bap_terminal_height() {
         _bap_terminal_height=$height
     fi
     return $returncode
+}
+
+
+_bap_print_text_props=""
+_bap_print_text_props_reset=""
+bap_print_text_props() {
+    _bap_print_text_props=""
+    _bap_print_text_props_reset=""
+
+    if (( bap_lines_dim != 0 )); then
+        _bap_print_text_props="${bap_ansi_dim}"
+        _bap_print_text_props_reset="${bap_ansi_dim_reset}"
+    fi
 }
 
 
@@ -78,7 +94,11 @@ bap_print_headline() {
     local -i fill_width=$(( $width - ${#corner_left} - ${#corner_right} - ${msg_length} ))
 
     # Piece together line & print:
-    echo "${corner_left}${msg}${fill_too_long:1:$fill_width}${corner_right}"
+    local left="${_bap_print_text_props}${corner_left}${_bap_print_text_props_reset}"
+    local fill="${_bap_print_text_props}${fill_too_long:1:$fill_width}"
+    local right="${corner_right}${_bap_print_text_props_reset}"
+
+    echo "${left}${msg}${fill}${right}"
 
     # If you need to debug what's going on, ~printf~ with "%q" is helpful:
     #   printf "foot raw: '%q'\n" "$ps1_line_footer_raw"
@@ -134,10 +154,26 @@ bap_print_centered () {
 
     # 1) '%*.*s' = Spaces for the left padding based on string size.
     # 2) '%s'    = The (centered) string.
-    printf '%*.*s%s\n' 0 "$pad_left" "$bap_padding_spaces" "$string"
+    printf "${_bap_print_text_props}%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
 
     # # 3) '%*.*s' = Spaces for the right padding based on string size.
     # # NOTE: 1 & 3 can be different because integer math and centering inexactly
     # #   (e.g. centering a 1 char string to 4 width).
     # printf '%*.*s%s%*.*s\n' 0 "$pad_left" "$bap_padding_spaces" "$string" 0 "$pad_right" "$bap_padding_spaces"
+}
+
+
+# ------------------------------------------------------------------------------
+# Set-Up
+# ------------------------------------------------------------------------------
+
+bap_print_setup() {
+    # Need ANSI codes.
+    if [[ -z "${bap_ansi_dim}" ]]; then
+        echo "Can't find \`bap\`s ANSI codes..."
+        return 1
+    fi
+
+    bap_print_text_props
+    return 0
 }
