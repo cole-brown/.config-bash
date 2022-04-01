@@ -17,29 +17,29 @@ bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 # ------------------------------------------------------------------------------
 
 
-declare -i _terminal_width=-1
-terminal_width() {
+declare -i _bap_terminal_width=-1
+bap_terminal_width() {
     local -i width=$(tput cols)
     local -i returncode=$?
     if [[ ! -z "$1" ]]; then
         local -i max=$1
-        _terminal_width=$(( $width > $max ? $max : $width ))
+        _bap_terminal_width=$(( $width > $max ? $max : $width ))
     else
-        _terminal_width=$width
+        _bap_terminal_width=$width
     fi
     return $returncode
 }
 
 
-declare -i _terminal_height=-1
-terminal_height() {
+declare -i _bap_terminal_height=-1
+bap_terminal_height() {
     local -i height=$(tput lines)
     local -i returncode=$?
     if [[ ! -z "$1" ]]; then
         local -i max=$1
-        _terminal_height=$(( $height > $max ? $max : $height ))
+        _bap_terminal_height=$(( $height > $max ? $max : $height ))
     else
-        _terminal_height=$height
+        _bap_terminal_height=$height
     fi
     return $returncode
 }
@@ -51,7 +51,7 @@ terminal_height() {
 
 
 
-_ps1_print_line() {
+bap_print_headline() {
     # Inputs:
     local -i width=$1
     local corner_left="$2"
@@ -67,8 +67,8 @@ _ps1_print_line() {
     local msg="$@"
 
     # Get actual width to use:
-    terminal_width $width
-    width=$_terminal_width
+    bap_terminal_width $width
+    width=$_bap_terminal_width
 
     # Create long fill string we can grab a substring of for final line.
     local -i width_too_long=$((width + 10))
@@ -91,7 +91,7 @@ _ps1_print_line() {
 # NOTE: This cannot handle the PS1 variables like '\u', etc. They're not
 # expanded yet so the calculated message string length will be incorrect.
 #   See: https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
-_ps1_print_line_auto() {
+bap_print_headline_auto() {
     # Inputs:
     local -i width=$1
     local corner_left="$2"
@@ -106,7 +106,7 @@ _ps1_print_line_auto() {
     bap_ansi_strip "$msg"
 
     # Print line w/ stripped msg length.
-    _ps1_print_line $width "$corner_left" "$fill_char" "$corner_right" ${#_bap_ansi_strip} "$msg"
+    bap_print_headline $width "$corner_left" "$fill_char" "$corner_right" ${#_bap_ansi_strip} "$msg"
 }
 
 
@@ -126,8 +126,8 @@ bap_print_centered () {
     local string_width=${#string}
 
     # Get actual width to use:
-    terminal_width $width
-    width=$_terminal_width
+    bap_terminal_width $width
+    width=$_bap_terminal_width
 
     # The left side will be the short side if needed.
     local -i pad_left=$(( ($width - $string_width) / 2 ))

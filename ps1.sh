@@ -162,7 +162,7 @@ ps1_output() {
   # About previous command.
   # ---
   # Line 00: error code, timestamp
-  _ps1_print_line $bap_ps1_max_width ╘ ═ ╛ ${#ps1_line_footer_raw} "${ps1_line_footer_fmt}"
+  bap_print_headline $bap_ps1_max_width ╘ ═ ╛ ${#ps1_line_footer_raw} "${ps1_line_footer_fmt}"
   # echo "${ps1_entry_exit}${ps1_entry_timestamp}"
 
   # ---
@@ -176,8 +176,8 @@ ps1_output() {
 
   # Line 01: OS, user/host, etc.
   # echo "${ps1_entry_os}:${ps1_entry_chroot}${ps1_user}"
-  # _ps1_print_line $bap_ps1_max_width ╒ ═ ╕ "${ps1_fmt_line}"
-  _ps1_print_line $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
+  # bap_print_headline $bap_ps1_max_width ╒ ═ ╕ "${ps1_fmt_line}"
+  bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
 
   # Line 02 (+03): Current Dir (+ Version Control Info)
   echo '$(ps1_output_dir)' # Needs eval'd every time.
