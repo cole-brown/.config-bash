@@ -92,13 +92,13 @@ bap_output_ps1() {
   # Build Footer (exit code/timestamp/...).
   # ---
   # `bap_prev_cmd_exit_status` Will be set in ~prompt_command~
-  local ps1_entry_raw='${bap_prev_cmd_exit_status}'
-  local ps1_entry_fmt="${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"'${bap_prev_cmd_exit_status}'"${bap_ps1_ansi_reset}"
+  local ps1_entry_raw="${bap_prev_cmd_exit_status}"
+  local ps1_entry_fmt="${bap_ps1_ansi_reset}${bap_ps1_ansi_red}${bap_prev_cmd_exit_status}${bap_ps1_ansi_reset}"
 
   local ps1_line_footer_raw=""
   local ps1_line_footer_fmt=""
   if [[ ! -z "$ps1_entry_raw" ]]; then
-    ps1_line_footer_raw="${ps1_entry_raw}${_bap_print_text_props}═${_bap_print_text_props_reset}"
+    ps1_line_footer_raw="${ps1_entry_raw}═"
     ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props}═${_bap_print_text_props_reset}"
   fi
 
