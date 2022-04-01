@@ -51,7 +51,7 @@ bap_path_in_vc() {
 
   # In Git?
   if bap_path_root_git "$path"; then
-  _bap_path_root_vc="$_bap_path_root_git"
+    _bap_path_root_vc="$_bap_path_root_git"
     return 0
   fi
 
@@ -99,14 +99,6 @@ bap_ps1_vc_prompt() {
 
 
 bap_vc_setup() {
-  if ! bap_script_dir $1; then
-    echo "_usr_env.sh can't find _ansi_codes.sh"
-    return 1
-  else
-    source "${_bap_script_dir}/_ansi_codes.sh"
-    bap_ansi_setup "$_bap_script_dir"
-  fi
-
   #--------------
   # Version Control
   #--------------

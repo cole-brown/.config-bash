@@ -49,8 +49,6 @@ bap_terminal_height() {
 # Printing / Output
 # ------------------------------------------------------------------------------
 
-
-
 bap_print_headline() {
     # Inputs:
     local -i width=$1

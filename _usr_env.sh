@@ -1,12 +1,4 @@
 bap_usr_env_setup() {
-  if ! bap_script_dir $1; then
-    echo "_usr_env.sh can't find _ansi_codes.sh"
-    return 1
-  else
-    source "${_bap_script_dir}/_ansi_codes.sh"
-    bap_ansi_setup "$_bap_script_dir"
-  fi
-
   #--------------
   # About Me & Environment
   #--------------
