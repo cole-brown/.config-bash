@@ -99,12 +99,12 @@ bap_ps1_vc_prompt() {
 
 
 bap_vc_setup() {
-  if ! get_this_dir $1; then
+  if ! bap_script_dir $1; then
     echo "_usr_env.sh can't find _ansi_codes.sh"
     return 1
   else
-    source "${this_dir}/_ansi_codes.sh"
-    bap_ansi_setup "$this_dir"
+    source "${_bap_script_dir}/_ansi_codes.sh"
+    bap_ansi_setup "$_bap_script_dir"
   fi
 
   #--------------

@@ -25,9 +25,9 @@ if [ "$color_prompt" = yes ]; then
     #---
 
     source "${_bap_script_dir}/ps1.sh"
-    prompt_statement_setup "${_bap_script_dir}"
+    bap_setup "${_bap_script_dir}"
 
-    PROMPT_COMMAND=prompt_command
+    PROMPT_COMMAND=bap_prompt_command
 
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '

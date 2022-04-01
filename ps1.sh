@@ -1,13 +1,15 @@
+# ╔══════════════════════════════════════════════════════════════════════════╗ #
+# ║                        bap - Bourne Again Prompt                         ║ #
+# ╠══════════════════════════════════════════════════════════════════════════╣ #
+# ║                      The File that Does Everything.                      ║ #
+# ╚══════════════════════════════════════════════════════════════════════════╝ #
+
+
 # ------------------------------------------------------------------------------
 # Constants & Variables
 # ------------------------------------------------------------------------------
 
 declare -i bap_ps1_max_width=80
-
-# ------------------------------------------------------------------------------
-# Constants & Variables
-# ------------------------------------------------------------------------------
-
 
 
 # ------------------------------------------------------------------------------
@@ -16,47 +18,49 @@ declare -i bap_ps1_max_width=80
 # ==============================================================================
 # ------------------------------------------------------------------------------
 
-# ------------------------------
+# ------------------------------------------------------------------------------
 # Import Functions and such.
-# ------------------------------
-ps_import() {
+# ------------------------------------------------------------------------------
+bap_import() {
+  local import_path="$1"
+  source "$import_path/_path.sh"
+
   # ---
   # Make sure we know where we are.
   # ---
-  if ! get_this_dir "$1"; then
+  if ! bap_script_dir "$1"; then
     return $?
   fi
-  local here="$this_dir"
 
-  # ---
+  # ------------------------------
   # PS1 Command Prompt Stuff.
-  # ---
+  # ------------------------------
 
   # ---
   # Colors: De-uglifying Color Codes
   # ---
-  source "${here}/_ansi_codes.sh"
-  bap_ansi_setup "$here"
+  source "${_bap_script_dir}/_ansi_codes.sh"
+  bap_ansi_setup "$_bap_script_dir"
 
-  source "${here}/_print.sh"
+  source "${_bap_script_dir}/_print.sh"
 
   # ---
   # OS
   # ---
-  source "${here}/_os.sh"
-  _os_setup "$here"
+  source "${_bap_script_dir}/_os.sh"
+  bap_os_setup "$_bap_script_dir"
 
   # ---
   # About Me & Environment
   # ---
-  source "${here}/_usr_env.sh"
-  bap_usr_env_setup "$here"
+  source "${_bap_script_dir}/_usr_env.sh"
+  bap_usr_env_setup "$_bap_script_dir"
 
   # ---
   # Version Control
   # ---
-  source "${here}/_vc.sh"
-  bap_vc_setup "$here"
+  source "${_bap_script_dir}/_vc.sh"
+  bap_vc_setup "$_bap_script_dir"
 }
 
 
@@ -64,23 +68,18 @@ ps_import() {
 # PS1: Variables for ~prompt_command~ to fill for PS1.
 # ------------------------------
 
-declare ps1_exit_status=""
-export ps1_exit_status
+declare bap_prev_cmd_exit_status=""
+export bap_prev_cmd_exit_status
 
-# ps1_entry_prompt="\$> "
-ps1_entry_prompt="❯ "
-ps2_entry_prompt="$ps1_prompt"
+# bap_ps1_entry_prompt="\$> "
+bap_ps1_entry_prompt="❯ "
+bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
 
 
 # ------------------------------
 # PS1: The Main Prompt.
 # ------------------------------
-ps1_setup() {
-  PS1="$(ps1_output)"
-}
-
-
-ps1_output() {
+bap_output_ps1() {
 
   # ------------------------------
   # Build the prompt:
@@ -89,9 +88,9 @@ ps1_output() {
   # ---
   # Build Footer (exit code/timestamp/...).
   # ---
-  # `ps1_exit_status` Will be set in ~prompt_command~
-  local ps1_entry_raw='${ps1_exit_status}'
-  local ps1_entry_fmt="${bap_ps1_ansi_red}"'${ps1_exit_status}'"${bap_ps1_ansi_reset}"
+  # `bap_prev_cmd_exit_status` Will be set in ~prompt_command~
+  local ps1_entry_raw='${bap_prev_cmd_exit_status}'
+  local ps1_entry_fmt="${bap_ps1_ansi_red}"'${bap_prev_cmd_exit_status}'"${bap_ps1_ansi_reset}"
 
   local ps1_line_footer_raw=""
   local ps1_line_footer_fmt=""
@@ -161,14 +160,14 @@ ps1_output() {
   bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
 
   # Line 02 (+03): Current Dir (+ Version Control Info)
-  echo '$(ps1_output_dir)' # Needs eval'd every time.
+  echo '$(bap_output_ps1_dir)' # Needs eval'd every time.
 
   # Line 04: Prompt.
-  echo "└┤${ps1_entry_prompt}"
+  echo "└┤${bap_ps1_entry_prompt}"
 }
 
 
-ps1_output_dir() {
+bap_output_ps1_dir() {
   # ------------------------------
   # Version Control
   # ------------------------------
@@ -184,12 +183,12 @@ ps1_output_dir() {
   # Output Dir/VC lines.
   # ------------------------------
   if bap_path_in_vc "$PWD"; then
-    #local ps1_path_root="$_path_root_vc"
+    #local ps1_path_root="$_bap_path_root_vc"
 
     # Split into root, relative if in a VC dir.
-    local ps1_path_parent="$(dirname "$_path_root_vc")"
-    local ps1_path_repo="$(basename "$_path_root_vc")"
-    local ps1_path_rel="$(realpath --relative-to="$_path_root_vc" "$PWD")"
+    local ps1_path_parent="$(dirname "$_bap_path_root_vc")"
+    local ps1_path_repo="$(basename "$_bap_path_root_vc")"
+    local ps1_path_rel="$(realpath --relative-to="$_bap_path_root_vc" "$PWD")"
 
     # Repo's root path one color & relative path a second color.
     # Also, underline the repo name.
@@ -202,45 +201,50 @@ ps1_output_dir() {
 }
 
 
-# ------------------------------
-# PS2: Used as prompt for incomplete commands.
-# ------------------------------
-ps2_setup() {
-  PS2="$(ps2_output)"
+bap_setup_ps1() {
+  PS1="$(bap_output_ps1)"
 }
 
 
-ps2_output() {
+# ------------------------------------------------------------------------------
+# PS2: Used as prompt for incomplete commands.
+# ------------------------------------------------------------------------------
+bap_output_ps2() {
   # ------------------------------
   # Set up PS2 variable
   # ------------------------------
   # PS1:
   #    "..."
-  #    "└┤$[ps1_entry_prompt}"
-  echo " │${ps2_entry_prompt}"
+  #    "└┤$[bap_ps1_entry_prompt}"
+  echo " │${bap_ps2_entry_prompt}"
 }
 
 
-# ------------------------------
+bap_setup_ps2() {
+  PS2="$(bap_output_ps2)"
+}
+
+
+# ------------------------------------------------------------------------------
 # PS3: Used as prompt for ~select~ statements.
-# ------------------------------
+# ------------------------------------------------------------------------------
 
 
-# ------------------------------
+# ------------------------------------------------------------------------------
 # PS4: Prefix for statements during execution trace (~set -x~).
 #   - Printed multiple times if multiple levels of indirection.
 #   - Default is: "+ "
-# ------------------------------
+# ------------------------------------------------------------------------------
 
 
 # ------------------------------
 # Set-Up / Init for Prompts.
 # ------------------------------
-prompt_statement_setup() {
+bap_setup() {
   local dir="$1"
-  ps_import "$dir"
-  ps1_setup
-  ps2_setup
+  bap_import "$dir"
+  bap_setup_ps1
+  bap_setup_ps2
 }
 
 
@@ -248,7 +252,7 @@ prompt_statement_setup() {
 # Prompt Builder
 # ------------------------------------------------------------------------------
 
-prompt_command() {
+bap_prompt_command() {
   # ------------------------------
   # First: Exit Code
   # ------------------------------
@@ -260,8 +264,10 @@ prompt_command() {
   # ------------------------------
 
   if [[ $exit_code -eq 0 ]]; then
-    ps1_exit_status=""
+    bap_prev_cmd_exit_status=""
   else
-    ps1_exit_status="⚠「${exit_code}」"
+    bap_prev_cmd_exit_status="⚠「${exit_code}」"
   fi
+
+  bap_command_prev="$BASH_COMMAND"
 }
