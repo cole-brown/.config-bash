@@ -53,6 +53,9 @@ bap_import() {
   source "${_bap_script_dir}/_os.sh"
   bap_os_setup "$_bap_script_dir"
 
+  source "${_bap_script_dir}/_timer.sh"
+  bap_timer_setup "$_bap_script_dir"
+
   # ---
   # About Me & Environment
   # ---
@@ -64,6 +67,20 @@ bap_import() {
   # ---
   source "${_bap_script_dir}/_vc.sh"
   bap_vc_setup "$_bap_script_dir"
+}
+
+
+# ------------------------------
+# PS0: Runs right /before/ the command is executed.
+# ------------------------------
+
+bap_output_ps0() {
+  bap_timer_start $_bap_timer_pid
+}
+
+
+bap_setup_ps0() {
+  PS0="$(bap_output_ps0)"
 }
 
 
@@ -102,13 +119,22 @@ bap_output_ps1() {
     ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props}═${_bap_print_text_props_reset}"
   fi
 
+  # Command Timer
+  # TODO: Maybe use this for timing command durations? "⧗hh:mm:ss.mmm"
+  #   - Currently just "s.mmm"
+  # TODO: WTF? always same start/end/duration? >.<
+  bap_timer_stop $_bap_timer_pid
+  ps1_entry_raw="⧗${_bap_timer_duration}"
+  ps1_entry_fmt="${_bap_print_text_props}⧗${_bap_print_text_props_reset}${bap_ps1_ansi_green}${_bap_timer_duration}${bap_ps1_ansi_reset}${_bap_print_text_props}"
+  ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}═"
+  ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}${_bap_print_text_props}═"
+
+  # Date & Time
   bap_env_timestamp
   ps1_entry_raw="◷[${_bap_env_timestamp}]"
   ps1_entry_fmt="${_bap_print_text_props}◷[${_bap_print_text_props_reset}${bap_ps1_ansi_green}${_bap_env_timestamp}${bap_ps1_ansi_reset}${_bap_print_text_props}]"
   ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}"
   ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}"
-
-  # TODO: Maybe use this for timing command durations? "⧗hh:mm:ss.mmm"
 
   # ---
   # Build Header (OS/CHROOT/USER/...).
@@ -166,10 +192,10 @@ bap_output_ps1() {
   bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
 
   # Line 02 (+03): Current Dir (+ Version Control Info)
-  echo '$(bap_output_ps1_dir)' # Needs eval'd every time.
+  echo -e "$(bap_output_ps1_dir)"
 
   # Line 04: Prompt.
-  echo "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
+  echo -e "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
 }
 
 
@@ -208,7 +234,8 @@ bap_output_ps1_dir() {
 
 
 bap_setup_ps1() {
-  PS1="$(bap_output_ps1)"
+  # TODO: Have to put all the
+  PS1='$(bap_output_ps1)'
 }
 
 
@@ -249,6 +276,7 @@ bap_setup_ps2() {
 bap_setup() {
   local dir="$1"
   bap_import "$dir"
+  bap_setup_ps0
   bap_setup_ps1
   bap_setup_ps2
 }
@@ -275,5 +303,5 @@ bap_prompt_command() {
     bap_prev_cmd_exit_status="⚠「${exit_code}」"
   fi
 
-  bap_command_prev="$BASH_COMMAND"
+  # bap_prev_cmd="$BASH_COMMAND"
 }

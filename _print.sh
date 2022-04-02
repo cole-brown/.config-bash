@@ -55,8 +55,8 @@ bap_print_text_props() {
     _bap_print_text_props_reset=""
 
     if (( bap_lines_dim != 0 )); then
-        _bap_print_text_props="${bap_ansi_dim}"
-        _bap_print_text_props_reset="${bap_ansi_dim_reset}"
+        _bap_print_text_props="${bap_ps1_ansi_dim}"
+        _bap_print_text_props_reset="${bap_ps1_ansi_dim_reset}"
     fi
 }
 
@@ -98,7 +98,7 @@ bap_print_headline() {
     local fill="${_bap_print_text_props}${fill_too_long:1:$fill_width}"
     local right="${corner_right}${_bap_print_text_props_reset}"
 
-    echo "${left}${msg}${fill}${right}"
+    echo -e "${left}${msg}${fill}${right}"
 
     # If you need to debug what's going on, ~printf~ with "%q" is helpful:
     #   printf "foot raw: '%q'\n" "$ps1_line_footer_raw"

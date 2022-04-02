@@ -57,42 +57,44 @@ bap_ansi_setup() {
   # ------------------------------
   # "\[" + ANSI Code + "\]"
   # The escaped brackets help Bash count how long the prompt actually is or something.
+  bap_ps1_ansi_start="\001"
+  bap_ps1_ansi_end="\002"
 
   # ---
   # General
   # ---
-  bap_ps1_ansi_reset="\[${bap_ansi_reset}\]"
+  bap_ps1_ansi_reset="${bap_ps1_ansi_start}${bap_ansi_reset}${bap_ps1_ansi_end}"
 
   # ---
   # Colors
   # ---
-  bap_ps1_ansi_red="\[${bap_ansi_red}\]"
-  bap_ps1_ansi_green="\[${bap_ansi_green}\]"
-  bap_ps1_ansi_yellow="\[${bap_ansi_yellow}\]"
-  bap_ps1_ansi_blue="\[${bap_ansi_blue}\]"
-  bap_ps1_ansi_purple="\[${bap_ansi_purple}\]"
-  bap_ps1_ansi_teal="\[${bap_ansi_teal}\]"
+  bap_ps1_ansi_red="${bap_ps1_ansi_start}${bap_ansi_red}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_green="${bap_ps1_ansi_start}${bap_ansi_green}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_yellow="${bap_ps1_ansi_start}${bap_ansi_yellow}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_blue="${bap_ps1_ansi_start}${bap_ansi_blue}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_purple="${bap_ps1_ansi_start}${bap_ansi_purple}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_teal="${bap_ps1_ansi_start}${bap_ansi_teal}${bap_ps1_ansi_end}"
 
-  bap_ps1_ansi_invert="\[${bap_ansi_invert}\]"
+  bap_ps1_ansi_invert="${bap_ps1_ansi_start}${bap_ansi_invert}${bap_ps1_ansi_end}"
 
   # ---
   # Text Properties
   # ---
-  bap_ps1_ansi_bold="\[${bap_ansi_bold}\]"
-  bap_ps1_ansi_dim="\[${bap_ansi_dim}\]"
-  bap_ps1_ansi_italic="\[${bap_ansi_italic}\]"
-  bap_ps1_ansi_underline="\[${bap_ansi_underline}\]"
-  bap_ps1_ansi_blink="\[${bap_ansi_blink}\]"
-  bap_ps1_ansi_hidden="\[${bap_ansi_hidden}\]"
-  bap_ps1_ansi_strikethrough="\[${bap_ansi_strikethrough}\]"
+  bap_ps1_ansi_bold="${bap_ps1_ansi_start}${bap_ansi_bold}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_dim="${bap_ps1_ansi_start}${bap_ansi_dim}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_italic="${bap_ps1_ansi_start}${bap_ansi_italic}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_underline="${bap_ps1_ansi_start}${bap_ansi_underline}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_blink="${bap_ps1_ansi_start}${bap_ansi_blink}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_hidden="${bap_ps1_ansi_start}${bap_ansi_hidden}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_strikethrough="${bap_ps1_ansi_start}${bap_ansi_strikethrough}${bap_ps1_ansi_end}"
 
-  bap_ps1_ansi_bold_reset="\[${bap_ansi_bold_reset}\]"
-  bap_ps1_ansi_dim_reset="\[${bap_ansi_dim_reset}\]"
-  bap_ps1_ansi_italic_reset="\[${bap_ansi_italic_reset}\]"
-  bap_ps1_ansi_underline_reset="\[${bap_ansi_underline_reset}\]"
-  bap_ps1_ansi_blink_reset="\[${bap_ansi_blink_reset}\]"
-  bap_ps1_ansi_hidden_reset="\[${bap_ansi_hidden_reset}\]"
-  bap_ps1_ansi_strikethrough_reset="\[${bap_ansi_strikethrough_reset}\]"
+  bap_ps1_ansi_bold_reset="${bap_ps1_ansi_start}${bap_ansi_bold_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_dim_reset="${bap_ps1_ansi_start}${bap_ansi_dim_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_italic_reset="${bap_ps1_ansi_start}${bap_ansi_italic_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_underline_reset="${bap_ps1_ansi_start}${bap_ansi_underline_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_blink_reset="${bap_ps1_ansi_start}${bap_ansi_blink_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_hidden_reset="${bap_ps1_ansi_start}${bap_ansi_hidden_reset}${bap_ps1_ansi_end}"
+  bap_ps1_ansi_strikethrough_reset="${bap_ps1_ansi_start}${bap_ansi_strikethrough_reset}${bap_ps1_ansi_end}"
 }
 
 
