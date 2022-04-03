@@ -269,20 +269,14 @@ bap_output_ps1_header() {
 
 bap_output_ps1_dir() {
   # ------------------------------
-  # Version Control
-  # ------------------------------
-  local ps1_entry_vc="${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}"
-
-  # ------------------------------
-  # Directory
-  # ------------------------------
-  # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
-  # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${bap_ps1_dir}${bap_ps1_ansi_reset}"
-
-  # ------------------------------
-  # Output Dir/VC lines.
+  # Are we in a version control repository?
   # ------------------------------
   if bap_path_in_vc "$PWD"; then
+    # ---
+    # Directory
+    # ---
+    # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
+    # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${bap_ps1_dir}${bap_ps1_ansi_reset}"
     #local ps1_path_root="$_bap_path_root_vc"
 
     # Split into root, relative if in a VC dir.
@@ -291,23 +285,32 @@ bap_output_ps1_dir() {
     local ps1_path_rel="$(realpath --relative-to="$_bap_path_root_vc" "$PWD")"
 
     # Repo's root path one color & relative path a second color.
-    # Also, underline the repo name.
-    echo -e "${_bap_print_text_props}├┬ ${_bap_print_text_props_reset}${bap_ansi_blue}${ps1_path_parent}/${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}"
-    echo -e "${_bap_print_text_props}│└─${_bap_print_text_props_reset}${ps1_entry_vc}"
-  else
-    # All one color.
-    echo -e "${_bap_print_text_props}├─ ${_bap_print_text_props_reset}${bap_ansi_blue}${PWD}${bap_ansi_reset}"
-  fi
+    bap_print_ps1 "${_bap_print_text_props}├┬ ${_bap_print_text_props_reset}"
+    bap_print_ps1 "${bap_ansi_blue}${ps1_path_parent}/"
+    # Still blue but also underline the repo name.
+    bap_print_ps1 "${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}"
+    # Recolor "/relative/path/in/repo" to "version control color".
+    bap_print_ps1 "${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}\n"
 
-  # ------------------------------
-  # Clean-Up
-  # ------------------------------
-  bap_timer_clear $_bap_timer_pid
+    # ---
+    # Version Control
+    # ---
+    bap_print_ps1 "${_bap_print_text_props}│└─${_bap_print_text_props_reset}"
+    bap_print_ps1 "${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}\n"
+
+  else
+    # ---
+    # Directory Only
+    # ---
+
+    # All one color.
+    bap_print_ps1 "${_bap_print_text_props}├─ ${_bap_print_text_props_reset}${bap_ansi_blue}${PWD}${bap_ansi_reset}\n"
+
+  fi
 }
 
 
 bap_output_ps1() {
-
   # ------------------------------
   # Build & output the prompt:
   # ------------------------------
@@ -318,19 +321,15 @@ bap_output_ps1() {
 
   bap_output_ps1_header
 
-  # ------------------------------
-  # Output the prompt:
-  # ------------------------------
-
-  # ---
-  # Prompt for this command.
-  # ---
-
-  # Line 02 (+03): Current Dir (+ Version Control Info)
-  echo -e "$(bap_output_ps1_dir)"
+  bap_output_ps1_dir
 
   # Line 04: Prompt.
   echo -e "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
+
+  # ------------------------------
+  # Clean-Up
+  # ------------------------------
+  bap_timer_clear $_bap_timer_pid
 }
 
 
