@@ -267,34 +267,6 @@ bap_output_ps1_header() {
 }
 
 
-bap_output_ps1() {
-
-  # ------------------------------
-  # Build & output the prompt:
-  # ------------------------------
-
-  bap_output_ps1_footer
-
-  bap_output_ps1_interim
-
-  bap_output_ps1_header
-
-  # ------------------------------
-  # Output the prompt:
-  # ------------------------------
-
-  # ---
-  # Prompt for this command.
-  # ---
-
-  # Line 02 (+03): Current Dir (+ Version Control Info)
-  echo -e "$(bap_output_ps1_dir)"
-
-  # Line 04: Prompt.
-  echo -e "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
-}
-
-
 bap_output_ps1_dir() {
   # ------------------------------
   # Version Control
@@ -331,6 +303,34 @@ bap_output_ps1_dir() {
   # Clean-Up
   # ------------------------------
   bap_timer_clear $_bap_timer_pid
+}
+
+
+bap_output_ps1() {
+
+  # ------------------------------
+  # Build & output the prompt:
+  # ------------------------------
+
+  bap_output_ps1_footer
+
+  bap_output_ps1_interim
+
+  bap_output_ps1_header
+
+  # ------------------------------
+  # Output the prompt:
+  # ------------------------------
+
+  # ---
+  # Prompt for this command.
+  # ---
+
+  # Line 02 (+03): Current Dir (+ Version Control Info)
+  echo -e "$(bap_output_ps1_dir)"
+
+  # Line 04: Prompt.
+  echo -e "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
 }
 
 
