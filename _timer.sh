@@ -27,6 +27,26 @@ bap_timer_clear () {
 }
 
 
+bap_timer_valid() {
+    local pid="$1"
+    if [[ -z "$pid" ]]; then
+        return 1
+    fi
+
+    if [[ ! -f "/dev/shm/${USER}.bap.time.${pid}" ]]; then
+        return 2
+    else
+        local start="$(cat /dev/shm/${USER}.bap.time.${pid})"
+        if [[ -z "$start" ]] || [[ "$start" = -* ]]; then
+            # "-1" is what we put to clear it in ~bap_timer_clear~, so if it's negative, ignore it.
+            return 3
+        fi
+    fi
+
+    return 0
+}
+
+
 # TODO: Maybe use this for timing command durations? "hh:mm:ss.mmm"
 #   - Currently just "s.mmm"
 bap_timer_round () {

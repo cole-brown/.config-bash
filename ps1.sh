@@ -133,8 +133,9 @@ bap_output_ps1_footer() {
   # ---
   # `bap_prev_cmd_exit_status` is set in ~bap_prompt_command~.
   # Display it in the prompt if it's not empty string.
-
-  if [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
+  #   - However, do not display it if the timer is invalid. Invalid timer
+  #     suggests the error exit code was from a while ago and thus stale.
+  if bap_timer_valid $_bap_timer_pid && [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
     # Print error code & spacer.
     ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
