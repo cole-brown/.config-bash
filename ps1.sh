@@ -12,6 +12,24 @@
 declare -i bap_ps1_max_width=80
 
 
+# ------------------------------
+# PS1: Variables for the PS1.
+# ------------------------------
+
+declare bap_prev_cmd_exit_status=""
+export bap_prev_cmd_exit_status
+
+bap_prev_cmd_exit_quote_left="「"
+bap_prev_cmd_exit_quote_right="」"
+# Those are 2 chars wide:
+bap_prev_cmd_exit_quote_left_eqiv="--"
+bap_prev_cmd_exit_quote_right_eqiv="--"
+
+# bap_ps1_entry_prompt="\$> "
+bap_ps1_entry_prompt="❯ "
+bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
+
+
 # ------------------------------------------------------------------------------
 # ==============================================================================
 #                                -- Function --
@@ -80,61 +98,108 @@ bap_output_ps0() {
 
 
 bap_setup_ps0() {
-  PS0="$(bap_output_ps0)"
+  PS0='$(bap_output_ps0)'
 }
 
 
-# ------------------------------
-# PS1: Variables for ~prompt_command~ to fill for PS1.
-# ------------------------------
-
-declare bap_prev_cmd_exit_status=""
-export bap_prev_cmd_exit_status
-
-# bap_ps1_entry_prompt="\$> "
-bap_ps1_entry_prompt="❯ "
-bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
-
-
-# ------------------------------
+# ------------------------------------------------------------------------------
 # PS1: The Main Prompt.
-# ------------------------------
+# ------------------------------------------------------------------------------
+
+# NOTE: Oddity with Bash Escape Sequences and Numbers:
+#   Because we want the time right after an escape sequence, the leading digit
+#   tends to get stripped for some fun reason if we just build the string like:
+#     x="${y}${z}..."
+#   So... echo the string in pieces, evaluating the escape codes as we go...
+
+bap_output_ps1_footer() {
+  local ps1_entry_raw=""
+
+  # ------------------------------
+  # Line -1: Blank line to separate out teh actual command a bit.
+  # ------------------------------
+  bap_print_newline
+
+  # ------------------------------
+  # Line 00: Footer
+  # ------------------------------
+    # Left corner of the line...
+  ps1_entry_raw="╘"
+  local -i width_curr=${#ps1_entry_raw}
+  bap_print_ps1 "${_bap_print_text_props}${ps1_entry_raw}"
+
+  # ---
+  # Error Code
+  # ---
+  # `bap_prev_cmd_exit_status` is set in ~bap_prompt_command~.
+  # Display it in the prompt if it's not empty string.
+
+  if [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
+    # Print error code & spacer.
+    ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+    bap_print_ps1 "${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"
+    bap_print_ps1 "${bap_prev_cmd_exit_quote_left}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
+    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props}═"
+  fi
+
+  # ---
+  # Command Timer
+  # ---
+  # TODO: Maybe nicer format for longer durations? "⧗hh:mm:ss.mmm"
+  #   - Currently just "s.mmm"
+  bap_timer_stop $_bap_timer_pid
+  if [[ ! -z "$_bap_timer_duration" ]]; then
+    # Print timer.
+    ps1_entry_raw="⧗${_bap_timer_duration}"
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+    bap_print_ps1 "⧗${_bap_print_text_props_reset}${bap_ps1_ansi_green}"
+    bap_print_ps1 "${_bap_timer_duration}"
+
+    # Print spacer.
+    ps1_entry_raw="═"
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props}${ps1_entry_raw}"
+  fi
+
+  # ---
+  # MIDDLE FILL SHOULD GO HERE!!!
+  # ---
+  # But first we need to figure out how wide the left-hand side stuff is...
+
+  # ---
+  # Date & Time : Part 01
+  # ---
+  # Figure out width so we can make fill.
+  bap_env_timestamp
+  # Including the ending corner.
+  ps1_entry_raw="◷[${_bap_env_timestamp}]╛"
+  width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+  # ---
+  # MIDDLE FILL DOES GO HERE!!!
+  # ---
+  bap_terminal_width $bap_ps1_max_width
+  bap_print_fill $(($_bap_terminal_width - $width_curr)) ═
+
+  # ---
+  # Date & Time : Part 02
+  # ---
+  # Actually print it (w/ ending corner).
+  bap_print_ps1 "◷[${_bap_print_text_props_reset}${bap_ps1_ansi_green}"
+  bap_print_ps1 "${_bap_env_timestamp}"
+  bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props}]╛\n"
+}
+
+
 bap_output_ps1() {
+  bap_output_ps1_footer
 
   # ------------------------------
   # Build the prompt:
   # ------------------------------
-
-  # ---
-  # Build Footer (exit code/timestamp/...).
-  # ---
-  # `bap_prev_cmd_exit_status` Will be set in ~prompt_command~
-  local ps1_entry_raw="${bap_prev_cmd_exit_status}"
-  local ps1_entry_fmt="${bap_ps1_ansi_reset}${bap_ps1_ansi_red}${bap_prev_cmd_exit_status}${bap_ps1_ansi_reset}"
-
-  local ps1_line_footer_raw=""
-  local ps1_line_footer_fmt=""
-  if [[ ! -z "$ps1_entry_raw" ]]; then
-    ps1_line_footer_raw="${ps1_entry_raw}═"
-    ps1_line_footer_fmt="${ps1_entry_fmt}${_bap_print_text_props}═${_bap_print_text_props_reset}"
-  fi
-
-  # Command Timer
-  # TODO: Maybe use this for timing command durations? "⧗hh:mm:ss.mmm"
-  #   - Currently just "s.mmm"
-  # TODO: WTF? always same start/end/duration? >.<
-  bap_timer_stop $_bap_timer_pid
-  ps1_entry_raw="⧗${_bap_timer_duration}"
-  ps1_entry_fmt="${_bap_print_text_props}⧗${_bap_print_text_props_reset}${bap_ps1_ansi_green}${_bap_timer_duration}${bap_ps1_ansi_reset}${_bap_print_text_props}"
-  ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}═"
-  ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}${_bap_print_text_props}═"
-
-  # Date & Time
-  bap_env_timestamp
-  ps1_entry_raw="◷[${_bap_env_timestamp}]"
-  ps1_entry_fmt="${_bap_print_text_props}◷[${_bap_print_text_props_reset}${bap_ps1_ansi_green}${_bap_env_timestamp}${bap_ps1_ansi_reset}${_bap_print_text_props}]"
-  ps1_line_footer_raw="${ps1_line_footer_raw}${ps1_entry_raw}"
-  ps1_line_footer_fmt="${ps1_line_footer_fmt}${ps1_entry_fmt}"
 
   # ---
   # Build Header (OS/CHROOT/USER/...).
@@ -166,16 +231,6 @@ bap_output_ps1() {
   # ------------------------------
   # Output the prompt:
   # ------------------------------
-
-  # ---
-  # About previous command.
-  # ---
-  # Line -1: Blank line to separate out teh actual command a bit.
-  echo
-
-  # Line 00: error code, timestamp
-  bap_print_headline $bap_ps1_max_width ╘ ═ ╛ ${#ps1_line_footer_raw} "${ps1_line_footer_fmt}"
-  # echo "${ps1_entry_exit}${ps1_entry_timestamp}"
 
   # ---
   # Intermission
@@ -230,6 +285,11 @@ bap_output_ps1_dir() {
     # All one color.
     echo -e "${_bap_print_text_props}├─ ${_bap_print_text_props_reset}${bap_ansi_blue}${PWD}${bap_ansi_reset}"
   fi
+
+  # ------------------------------
+  # Clean-Up
+  # ------------------------------
+  bap_timer_clear $_bap_timer_pid
 }
 
 
@@ -249,12 +309,12 @@ bap_output_ps2() {
   # PS1:
   #    "..."
   #    "${_bap_print_text_props}└┤${_bap_print_text_props_reset}$[bap_ps1_entry_prompt}"
-  echo "${_bap_print_text_props} │${_bap_print_text_props_reset}${bap_ps2_entry_prompt}"
+  echo -e "${_bap_print_text_props} │${_bap_print_text_props_reset}${bap_ps2_entry_prompt}"
 }
 
 
 bap_setup_ps2() {
-  PS2="$(bap_output_ps2)"
+  PS2='$(bap_output_ps2)'
 }
 
 
@@ -300,7 +360,7 @@ bap_prompt_command() {
   if [[ $exit_code -eq 0 ]]; then
     bap_prev_cmd_exit_status=""
   else
-    bap_prev_cmd_exit_status="⚠「${exit_code}」"
+    bap_prev_cmd_exit_status="${exit_code}"
   fi
 
   # bap_prev_cmd="$BASH_COMMAND"

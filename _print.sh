@@ -14,6 +14,10 @@ bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 # 0 == false, 1 == true
 declare -i bap_lines_dim=1
 
+# bap_lines_dim et al as PS1/ANSI escape sequences.
+_bap_print_text_props=""
+_bap_print_text_props_reset=""
+
 
 # ------------------------------------------------------------------------------
 # Terminal Info
@@ -48,22 +52,46 @@ bap_terminal_height() {
 }
 
 
-_bap_print_text_props=""
-_bap_print_text_props_reset=""
-bap_print_text_props() {
-    _bap_print_text_props=""
-    _bap_print_text_props_reset=""
+# ------------------------------------------------------------------------------
+# Printing / Output : Basic
+# ------------------------------------------------------------------------------
 
-    if (( bap_lines_dim != 0 )); then
-        _bap_print_text_props="${bap_ps1_ansi_dim}"
-        _bap_print_text_props_reset="${bap_ps1_ansi_dim_reset}"
+bap_print_newline() {
+    echo
+}
+
+
+bap_print_ps1() {
+    echo -ne "${@}"
+}
+
+
+bap_print_fill () {
+    local -i width=$1
+    local fill_char="$2"
+    if [[ ${#fill_char} -ne 1 ]]; then
+        return 1
     fi
+
+    # ------------------------------
+    # Create a fill string.
+    # ------------------------------
+    # For some reason, trying to create the proper length to start with leaves
+    # us 2 characters short? So create something long and then trim down...
+    local fill_str="$(printf "%*s" $((width + 10)) $fill_char)"
+
+    # Replace all the spaces with the line char for complete line.
+    fill_str=$(echo "${fill_str// /$fill_char}")
+
+    # Trim down to correct size for print.
+    bap_print_ps1 "${fill_str:1:$width}"
 }
 
 
 # ------------------------------------------------------------------------------
 # Printing / Output
 # ------------------------------------------------------------------------------
+
 
 bap_print_headline() {
     # Inputs:
@@ -86,7 +114,7 @@ bap_print_headline() {
 
     # Create long fill string we can grab a substring of for final line.
     local -i width_too_long=$((width + 10))
-    fill_too_long="$(printf "%*s" $width_too_long $fill_char)"
+    local fill_too_long="$(printf "%*s" $width_too_long $fill_char)"
     # Then replace all the spaces with the line char for complete line.
     fill_too_long=$(echo "${fill_too_long// /$fill_char}")
 
@@ -174,6 +202,14 @@ bap_print_setup() {
         return 1
     fi
 
-    bap_print_text_props
+    _bap_print_text_props=""
+    _bap_print_text_props_reset=""
+
+    # Set our text properties.
+    if (( bap_lines_dim != 0 )); then
+        _bap_print_text_props="${bap_ps1_ansi_dim}"
+        _bap_print_text_props_reset="${bap_ps1_ansi_dim_reset}"
+    fi
+
     return 0
 }
