@@ -309,6 +309,11 @@ bap_output_ps1_dir() {
   fi
 }
 
+bap_output_ps1_prompt() {
+  # Final PS1 line: The Prompt.
+  bap_print_ps1 "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
+}
+
 
 bap_output_ps1() {
   # ------------------------------
@@ -323,8 +328,7 @@ bap_output_ps1() {
 
   bap_output_ps1_dir
 
-  # Line 04: Prompt.
-  echo -e "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
+  bap_output_ps1_prompt
 
   # ------------------------------
   # Clean-Up
