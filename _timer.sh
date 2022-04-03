@@ -14,6 +14,19 @@ _bap_timer_pid=""
 # Timer Functions
 # ------------------------------------------------------------------------------
 
+bap_timer_clear () {
+    local pid="$1"
+    if [[ -z "$pid" ]]; then
+        return 1
+    fi
+
+    # Places the epoch time in ns into shared memory.
+    echo "-1" >"/dev/shm/${USER}.bap.time.${pid}"
+    # echo "-1 put in?"
+    # cat "/dev/shm/${USER}.bap.time.${pid}"
+}
+
+
 # TODO: Maybe use this for timing command durations? "hh:mm:ss.mmm"
 #   - Currently just "s.mmm"
 bap_timer_round () {
@@ -40,31 +53,34 @@ END_MATHS
 
 bap_timer_start () {
     local pid="$1"
+    if [[ -z "$pid" ]]; then
+        return 1
+    fi
 
     # Places the epoch time in ns into shared memory.
     date +%s.%N >"/dev/shm/${USER}.bap.time.${pid}"
-
-    # TODO: WTF? always same start/end/duration? >.<
-    # echo "/dev/shm/${USER}.bap.time.${pid}"
-    # cat "/dev/shm/${USER}.bap.time.${pid}"
 }
 
 
 bap_timer_stop () {
     local pid="$1"
+    if [[ -z "$pid" ]]; then
+        return 1
+    fi
 
-    _bap_timer_duration=""
-    # Reads stored epoch time, subtracts from current, and outputs.
-    local end="$(date +%s.%N)"
-    local start="$(cat /dev/shm/${USER}.bap.time.${pid})"
+    if [[ -f "/dev/shm/${USER}.bap.time.${pid}" ]]; then
+        _bap_timer_duration=""
 
-    # TODO: WTF? always same start/end/duration? >.<
-    # echo "start: $start"
-    # echo "end:   $end"
-    # echo "dur:   $(eval echo "$end - $start")"
-    # echo "dur:   $(echo $(eval echo "$end - $start") | bc)"
+        # Reads stored epoch time, subtracts from current, and outputs.
+        local start="$(cat /dev/shm/${USER}.bap.time.${pid})"
+        if [[ -z "$start" ]] || [[ "$start" = -* ]]; then
+            # "-1" is what we put to clear it in ~bap_timer_clear~, so if it's negative, ignore it.
+            return 2
+        fi
 
-    bap_timer_round $(echo $(eval echo "$end - $start") | bc)
+        local end="$(date +%s.%N)"
+        bap_timer_round $(echo $(eval echo "$end - $start") | bc)
+    fi
 }
 
 
