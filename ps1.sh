@@ -194,57 +194,98 @@ bap_output_ps1_footer() {
 }
 
 
-bap_output_ps1() {
-  bap_output_ps1_footer
+bap_output_ps1_interim() {
+  bap_print_centered $bap_ps1_max_width "╶─╼━╾─╴"
+}
 
-  # ------------------------------
-  # Build the prompt:
-  # ------------------------------
 
+bap_output_ps1_header() {
   # ---
-  # Build Header (OS/CHROOT/USER/...).
+  # Left corner of the line...
+  # ---
+  local ps1_entry_raw="╒"
+  local -i width_curr=${#ps1_entry_raw}
+  bap_print_ps1 "${_bap_print_text_props}${ps1_entry_raw}"
+
   # ---
   # OS info.
-  ps1_entry_raw="${bap_ps1_os}"
-  ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_os}${bap_ps1_ansi_dim_reset}"
-  # Start with entry and also separator character.
-  ps1_line_header_raw=" ${ps1_entry_raw} ═"
-  ps1_line_header_fmt=" ${ps1_entry_fmt}${_bap_print_text_props} ═${_bap_print_text_props_reset}"
+  # ---
+  if [[ ! -z "$bap_ps1_os" ]]; then
+    ps1_entry_raw=" ${bap_ps1_os} ═"
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-  # Optional CHROOT info.
-  if [[ ! -z "${bap_ps1_chroot}" ]]; then
-    ps1_entry_raw="${bap_ps1_chroot}"
-    ps1_entry_fmt="${bap_ps1_ansi_dim}${bap_ps1_chroot}${bap_ps1_ansi_dim_reset}"
-    # Append entry and also separator character.
-    ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} ="
-    ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt}${_bap_print_text_props} =${_bap_print_text_props_reset}"
+    bap_print_ps1 "${ps1_entry_raw}"
   fi
 
+  # ---
+  # Optional CHROOT info.
+  # ---
+  if [[ ! -z "${bap_ps1_chroot}" ]]; then
+    ps1_entry_raw="${bap_ps1_chroot} ="
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+    bap_print_ps1 "${ps1_entry_raw}"
+  fi
+
+  # ---
   # User info.
+  # ---
   bap_env_ident
-  ps1_entry_raw="${_bap_env_ident}"
-  ps1_entry_fmt="${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
-  # No separator - this is the last thing.
-  ps1_line_header_raw="${ps1_line_header_raw} ${ps1_entry_raw} "
-  ps1_line_header_fmt="${ps1_line_header_fmt} ${ps1_entry_fmt} "
+  if [[ ! -z "${_bap_env_ident}" ]]; then
+    ps1_entry_raw=" ${_bap_env_ident} "
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+    bap_print_ps1 " ${_bap_print_text_props_reset}"
+    bap_print_ps1 "${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
+    bap_print_ps1 " ${_bap_print_text_props}"
+  fi
+
+  # ---
+  # MIDDLE FILL SHOULD GO HERE!!!
+  # ---
+  # But first we need to figure out how wide the left-hand side stuff is...
+
+  # ---
+  # Left-Hand Side Stuff.
+  # ---
+  ps1_entry_raw="╕"
+  width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+
+  # ---
+  # MIDDLE FILL DOES GO HERE!!!
+  # ---
+  bap_terminal_width $bap_ps1_max_width
+  bap_print_fill $(($_bap_terminal_width - $width_curr)) ═
+
+
+  # ---
+  # Final Corner.
+  # ---
+  # bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
+  bap_print_ps1 "╕\n"
+}
+
+
+bap_output_ps1() {
+
+  # ------------------------------
+  # Build & output the prompt:
+  # ------------------------------
+
+  bap_output_ps1_footer
+
+  bap_output_ps1_interim
+
+  bap_output_ps1_header
 
   # ------------------------------
   # Output the prompt:
   # ------------------------------
 
   # ---
-  # Intermission
-  # ---
-  bap_print_centered $bap_ps1_max_width "╶─╼━╾─╴"
-
-  # ---
   # Prompt for this command.
   # ---
-
-  # Line 01: OS, user/host, etc.
-  # echo "${ps1_entry_os}:${ps1_entry_chroot}${bap_ps1_user}"
-  # bap_print_headline $bap_ps1_max_width ╒ ═ ╕ "${ps1_fmt_line}"
-  bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
 
   # Line 02 (+03): Current Dir (+ Version Control Info)
   echo -e "$(bap_output_ps1_dir)"
