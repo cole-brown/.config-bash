@@ -56,9 +56,15 @@ bap_ansi_setup() {
   # PS1 Codes
   # ------------------------------
   # "\[" + ANSI Code + "\]"
-  # The escaped brackets help Bash count how long the prompt actually is or something.
+  # The escaped brackets help Bash count how long the prompt actually is or
+  # something. Can't use "\[" and "\]" because they just show up as-is, but the
+  # equivalent "\001" and \"002" work fine.*
+  # bap_ps1_ansi_start="\["
+  # bap_ps1_ansi_end="\]"
   bap_ps1_ansi_start="\001"
   bap_ps1_ansi_end="\002"
+  # *They work fine until you try displaying a number right after one...
+  # "\002" + "0.3" = "\0020.3" --> ".3" (the 0 gets eaten by the "\002" escape sequence).
 
   # ---
   # General
