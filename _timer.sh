@@ -14,7 +14,7 @@ _bap_timer_pid=""
 # Traps
 # ------------------------------------------------------------------------------
 
-runonexit () {
+bap_timer_trap_exit () {
     # Clean up the timestamp in shared memory.
     rm "/dev/shm/${USER}.bashtime.${_bap_timer_pid}"
 }
@@ -116,5 +116,5 @@ bap_timer_stop () {
 
 bap_timer_setup() {
     export _bap_timer_pid=$BASHPID
-    trap runonexit EXIT
+    trap bap_timer_trap_exit EXIT
 }
