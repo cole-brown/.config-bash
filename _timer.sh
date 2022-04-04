@@ -16,7 +16,7 @@ _bap_timer_pid=""
 
 bap_timer_trap_exit () {
     # Clean up the timestamp in shared memory.
-    rm "/dev/shm/${USER}.bashtime.${_bap_timer_pid}"
+    rm "/dev/shm/${USER}.bap.time.${_bap_timer_pid}"
 }
 
 
