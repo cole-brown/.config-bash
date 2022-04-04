@@ -29,6 +29,7 @@ bap_ps2_prompt_symbol="$bap_ps1_prompt_symbol"
 
 
 bap_show_ip=true
+bap_show_tier=false
 
 
 # ------------------------------------------------------------------------------
@@ -372,6 +373,17 @@ bap_output_ps1_dir() {
 
 
 bap_output_ps1_prompt() {
+  # Any additional info to show before prompt?
+  if $bap_show_tier; then
+    if bap_env_dev_tier ; then
+      bap_ps1_prompt_info="$_bap_env_dev_tier"
+      bap_ps2_prompt_info="$_bap_env_dev_tier"
+    else
+      bap_ps1_prompt_info=""
+      bap_ps2_prompt_info=""
+    fi
+  fi
+
   # Final PS1 line: The Prompt.
   bap_print_ps1 "${_bap_print_text_props}└┤${_bap_print_text_props_reset}"
   bap_print_ps1 "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"

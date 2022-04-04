@@ -38,6 +38,31 @@ bap_env_timestamp() {
 
 
 # ------------------------------------------------------------------------------
+# Development Tier
+# ------------------------------------------------------------------------------
+
+_bap_env_dev_tier=""
+bap_env_dev_tier() {
+  _bap_env_dev_tier=""
+  local host="$(hostname)"
+
+  # Translate "dev"/"stg"/"stag"/"prd"/"prod" in the hostname into "dev/"stg"/"prd" string.
+  if [[ "$host" =~ (^|[^[:alnum:]])dev([^[:alnum:]]|$) ]]; then
+    _bap_env_dev_tier="dev"
+    return 0
+  elif [[ "$host" =~ (^|[^[:alnum:]])sta?g([^[:alnum:]]|$) ]]; then
+    _bap_env_dev_tier="stg"
+    return 0
+  elif [[ "$host" =~ (^|[^[:alnum:]])pro?d([^[:alnum:]]|$) ]]; then
+    _bap_env_dev_tier="prd"
+    return 0
+  fi
+
+  return 1
+}
+
+
+# ------------------------------------------------------------------------------
 # IP Addresses
 # ------------------------------------------------------------------------------
 
