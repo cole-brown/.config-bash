@@ -263,7 +263,6 @@ bap_output_ps1_header() {
   # ---
   # Final Corner.
   # ---
-  # bap_print_headline $bap_ps1_max_width ╒ ═ ╕ ${#ps1_line_header_raw} "${ps1_line_header_fmt}"
   bap_print_ps1 "╕\n"
 }
 

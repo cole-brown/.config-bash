@@ -5,24 +5,33 @@
 # ------------------------------------------------------------------------------
 
 # ------------------------------
+# Text Properties for the Pretty Printing background stuff.
+# ------------------------------
+# 0 == false, 1 == true
+
+# ASCII box art lines should be dimmed?
+declare -i bap_lines_dim=1
+
+
+# ---
+# All Together:
+# ---
+# `bap_lines_dim` et al as PS1/ANSI escape sequences.
+_bap_print_text_props=""
+_bap_print_text_props_reset=""
+
+
+# ------------------------------
 # Misc
 # ------------------------------
 
 # Just a big buffer of spaces to trim down to what we want.
 bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 
-# 0 == false, 1 == true
-declare -i bap_lines_dim=1
-
-# bap_lines_dim et al as PS1/ANSI escape sequences.
-_bap_print_text_props=""
-_bap_print_text_props_reset=""
-
 
 # ------------------------------------------------------------------------------
 # Terminal Info
 # ------------------------------------------------------------------------------
-
 
 declare -i _bap_terminal_width=-1
 bap_terminal_width() {
@@ -89,72 +98,8 @@ bap_print_fill () {
 
 
 # ------------------------------------------------------------------------------
-# Printing / Output
+# Printing / Output : Alignment
 # ------------------------------------------------------------------------------
-
-
-bap_print_headline() {
-    # Inputs:
-    local -i width=$1
-    local corner_left="$2"
-    local fill_char="$3"
-    local corner_right="$4"
-    # I don't know how to strip out the "\[" and "\]" that the PS1 uses...
-    # so passing in explicit length for now.
-    local -i msg_length=$5
-
-    shift 5
-
-    # The rest of the params are the message.
-    local msg="$@"
-
-    # Get actual width to use:
-    bap_terminal_width $width
-    width=$_bap_terminal_width
-
-    # Create long fill string we can grab a substring of for final line.
-    local -i width_too_long=$((width + 10))
-    local fill_too_long="$(printf "%*s" $width_too_long $fill_char)"
-    # Then replace all the spaces with the line char for complete line.
-    fill_too_long=$(echo "${fill_too_long// /$fill_char}")
-
-    # Get width of fill.
-    local -i fill_width=$(( $width - ${#corner_left} - ${#corner_right} - ${msg_length} ))
-
-    # Piece together line & print:
-    local left="${_bap_print_text_props}${corner_left}${_bap_print_text_props_reset}"
-    local fill="${_bap_print_text_props}${fill_too_long:1:$fill_width}"
-    local right="${corner_right}${_bap_print_text_props_reset}"
-
-    echo -e "${left}${msg}${fill}${right}"
-
-    # If you need to debug what's going on, ~printf~ with "%q" is helpful:
-    #   printf "foot raw: '%q'\n" "$ps1_line_footer_raw"
-    #   printf "foot fmt: '%q'\n" "$ps1_line_footer_fmt"
-}
-
-
-# NOTE: This cannot handle the PS1 variables like '\u', etc. They're not
-# expanded yet so the calculated message string length will be incorrect.
-#   See: https://www.gnu.org/software/bash/manual/html_node/Controlling-the-Prompt.html
-bap_print_headline_auto() {
-    # Inputs:
-    local -i width=$1
-    local corner_left="$2"
-    local fill_char="$3"
-    local corner_right="$4"
-    shift 4
-
-    # The rest of the params are the message.
-    local msg="$@"
-
-    # Strip ANSI escape sequences so we can get a count of the actual characters.
-    bap_ansi_strip "$msg"
-
-    # Print line w/ stripped msg length.
-    bap_print_headline $width "$corner_left" "$fill_char" "$corner_right" ${#_bap_ansi_strip} "$msg"
-}
-
 
 # $1 = width: will use the min of this width or terminal width to determine center point.
 # $2+ = string to print
