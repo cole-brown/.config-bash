@@ -24,7 +24,8 @@ bap_env_ident() {
 
 
 _bap_env_timestamp=""
-_bap_env_timestamp_fmt="+%F %T"
+# _bap_env_timestamp_fmt="+%F %T%z" # timezone offset
+_bap_env_timestamp_fmt="+%F %T %Z" # timezone name
 bap_env_timestamp() {
   _bap_env_timestamp="$(date "$_bap_env_timestamp_fmt")"
 }
