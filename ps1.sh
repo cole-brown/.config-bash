@@ -320,10 +320,12 @@ bap_output_ps1() {
   # ------------------------------
   # Build & output the prompt:
   # ------------------------------
+  # Only output footer/interim if we actually ran a previous command.
+  if bap_timer_valid $_bap_timer_pid && [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
+    bap_output_ps1_footer
 
-  bap_output_ps1_footer
-
-  bap_output_ps1_interim
+    bap_output_ps1_interim
+  fi
 
   bap_output_ps1_header
 
