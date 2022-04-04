@@ -19,9 +19,13 @@ bap_prev_cmd_exit_quote_right="」"
 bap_prev_cmd_exit_quote_left_eqiv="--"
 bap_prev_cmd_exit_quote_right_eqiv="--"
 
-# bap_ps1_entry_prompt="\$> "
-bap_ps1_entry_prompt="❯ "
-bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
+
+bap_ps1_prompt_info="" # Just before `bap_ps1_prompt_symbol`.
+bap_ps2_prompt_info="" # Just before `bap_ps2_prompt_symbol`.
+
+# bap_ps1_prompt_symbol="\$> "
+bap_ps1_prompt_symbol="❯ "
+bap_ps2_prompt_symbol="$bap_ps1_prompt_symbol"
 
 
 bap_show_ip=true
@@ -199,13 +203,13 @@ bap_output_ps1_footer() {
     ps1_entry_raw="⧗${_bap_timer_duration}"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-    bap_print_ps1 "⧗${_bap_print_text_props_reset}${bap_ps1_ansi_green}"
+    bap_print_ps1 "⧗${_bap_print_text_props_reset}"
     bap_print_ps1 "${_bap_timer_duration}"
 
     # Print spacer.
     ps1_entry_raw="═"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
-    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props}${ps1_entry_raw}"
+    bap_print_ps1 "${_bap_print_text_props}${ps1_entry_raw}"
   fi
 
   # ---
@@ -232,9 +236,9 @@ bap_output_ps1_footer() {
   # Date & Time : Part 02
   # ---
   # Actually print it (w/ ending corner).
-  bap_print_ps1 "◷[${_bap_print_text_props_reset}${bap_ps1_ansi_green}"
+  bap_print_ps1 "◷[${_bap_print_text_props_reset}"
   bap_print_ps1 "${_bap_env_timestamp}"
-  bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props}]╛\n"
+  bap_print_ps1 "${_bap_print_text_props}]╛\n"
 }
 
 
@@ -313,11 +317,10 @@ bap_output_ps1_header() {
   if $bap_show_ip ; then
     # Let it still be dim?
     # Then have to add print props back in after reset to keep it dim.
-    bap_print_ps1 " ${bap_ps1_ansi_green}"
+    bap_print_ps1 "${_bap_print_text_props_reset}"
     bap_print_ps1 "${_bap_env_ip_addr_private}"
-    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props} ╱ ${bap_ps1_ansi_blue}"
+    bap_print_ps1 "${_bap_print_text_props}╱"
     bap_print_ps1 "${_bap_env_ip_addr_public}"
-    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props} "
   fi
 
   # ---
@@ -367,9 +370,11 @@ bap_output_ps1_dir() {
   fi
 }
 
+
 bap_output_ps1_prompt() {
   # Final PS1 line: The Prompt.
-  bap_print_ps1 "${_bap_print_text_props}└┤${_bap_print_text_props_reset}${bap_ps1_entry_prompt}"
+  bap_print_ps1 "${_bap_print_text_props}└┤${_bap_print_text_props_reset}"
+  bap_print_ps1 "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"
 }
 
 
@@ -410,9 +415,11 @@ bap_output_ps2() {
   # Set up PS2 variable
   # ------------------------------
   # PS1:
-  #    "..."
-  #    "${_bap_print_text_props}└┤${_bap_print_text_props_reset}$[bap_ps1_entry_prompt}"
-  echo -e "${_bap_print_text_props} │${_bap_print_text_props_reset}${bap_ps2_entry_prompt}"
+  #             "..."
+  #             "${_bap_print_text_props}└┤${_bap_print_text_props_reset}"
+  bap_print_ps1 "${_bap_print_text_props} │${_bap_print_text_props_reset}"
+  #             "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"
+  bap_print_ps1 "${bap_ps2_prompt_info}${bap_ps2_prompt_symbol}"
 }
 
 
