@@ -297,7 +297,7 @@ bap_output_ps1_header() {
   # Left-Hand Side Stuff.
   # ---
   if $bap_show_ip ; then
-    ps1_entry_raw=" ${_bap_env_ip_addr_private} ╱ ${_bap_env_ip_addr_public} "
+    ps1_entry_raw="${_bap_env_ip_addr_private}╱${_bap_env_ip_addr_public}"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
   fi
 
