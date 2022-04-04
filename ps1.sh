@@ -1,23 +1,17 @@
 # ╔══════════════════════════════════════════════════════════════════════════╗ #
 # ║                        bap - Bourne Again Prompt                         ║ #
 # ╠══════════════════════════════════════════════════════════════════════════╣ #
-# ║                      The File that Does Everything.                      ║ #
+# ║ A Bash Prompt that uses Functions and Variables, and can be understood?* ║ #
+# ║                                    :o                                    ║ #
 # ╚══════════════════════════════════════════════════════════════════════════╝ #
+# *Understanding not guarenteed.
 
 
 # ------------------------------------------------------------------------------
-# Constants & Variables
+# Settings for the End User
 # ------------------------------------------------------------------------------
 
 declare -i bap_ps1_max_width=80
-
-
-# ------------------------------
-# PS1: Variables for the PS1.
-# ------------------------------
-
-declare bap_prev_cmd_exit_status=""
-export bap_prev_cmd_exit_status
 
 bap_prev_cmd_exit_quote_left="「"
 bap_prev_cmd_exit_quote_right="」"
@@ -31,14 +25,58 @@ bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
 
 
 # ------------------------------------------------------------------------------
+# Constants & Variables
+# ------------------------------------------------------------------------------
+
+declare bap_prev_cmd_exit_status=""
+export bap_prev_cmd_exit_status
+
+# Was the previous prompt a command that was run, or a Ctrl-C, empty prompt, etc?
+_bap_cmd_ran=false
+
+
+# ------------------------------------------------------------------------------
 # ==============================================================================
 #                                -- Function --
 # ==============================================================================
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
+# Helper Functions
+# ------------------------------------------------------------------------------
+
+bap_cmd_ran() {
+  local -i timer_pid=$1
+
+  if $_bap_cmd_ran ; then
+    return 0
+  fi
+
+  if bap_timer_valid $timer_pid; then
+    return 0
+  fi
+
+  return 1
+}
+
+
+bap_cmd_errored() {
+  local -i timer_pid=$1
+
+  # Command can only error if it ran.
+  if bap_cmd_ran $_bap_timer_pid ; then
+    test ! -z "$bap_prev_cmd_exit_status"
+    return $?
+  fi
+
+  # Command did not error.
+  return 1
+}
+
+# ------------------------------------------------------------------------------
 # Import Functions and such.
 # ------------------------------------------------------------------------------
+
 bap_import() {
   local import_path="$1"
   source "$import_path/_path.sh"
@@ -94,6 +132,8 @@ bap_import() {
 
 bap_output_ps0() {
   bap_timer_start $_bap_timer_pid
+
+  _bap_cmd_ran=true
 }
 
 
@@ -135,7 +175,7 @@ bap_output_ps1_footer() {
   # Display it in the prompt if it's not empty string.
   #   - However, do not display it if the timer is invalid. Invalid timer
   #     suggests the error exit code was from a while ago and thus stale.
-  if bap_timer_valid $_bap_timer_pid && [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
+  if bap_cmd_errored $_bap_timer_pid; then
     # Print error code & spacer.
     ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
@@ -320,9 +360,8 @@ bap_output_ps1() {
   # Build & output the prompt:
   # ------------------------------
   # Only output footer/interim if we actually ran a previous command.
-  if bap_timer_valid $_bap_timer_pid && [[ ! -z "$bap_prev_cmd_exit_status" ]]; then
+  if bap_cmd_ran $_bap_timer_pid; then
     bap_output_ps1_footer
-
     bap_output_ps1_interim
   fi
 
@@ -336,11 +375,11 @@ bap_output_ps1() {
   # Clean-Up
   # ------------------------------
   bap_timer_clear $_bap_timer_pid
+  _bap_cmd_ran=false
 }
 
 
 bap_setup_ps1() {
-  # TODO: Have to put all the
   PS1='$(bap_output_ps1)'
 }
 
