@@ -24,6 +24,9 @@ bap_ps1_entry_prompt="❯ "
 bap_ps2_entry_prompt="$bap_ps1_entry_prompt"
 
 
+bap_show_ip=true
+
+
 # ------------------------------------------------------------------------------
 # Constants & Variables
 # ------------------------------------------------------------------------------
@@ -116,7 +119,7 @@ bap_import() {
   # About Me & Environment
   # ---
   source "${_bap_script_dir}/_usr_env.sh"
-  bap_usr_env_setup "$_bap_script_dir"
+  bap_usr_env_setup "$_bap_script_dir" $bap_show_ip
 
   # ---
   # Version Control
@@ -289,9 +292,13 @@ bap_output_ps1_header() {
   # ---
   # Left-Hand Side Stuff.
   # ---
+  if $bap_show_ip ; then
+    ps1_entry_raw=" ${_bap_env_ip_addr_private} ╱ ${_bap_env_ip_addr_public} "
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+  fi
+
   ps1_entry_raw="╕"
   width_curr=$(($width_curr + ${#ps1_entry_raw}))
-
 
   # ---
   # MIDDLE FILL DOES GO HERE!!!
@@ -299,6 +306,19 @@ bap_output_ps1_header() {
   bap_terminal_width $bap_ps1_max_width
   bap_print_fill $(($_bap_terminal_width - $width_curr)) ═
 
+  # ---
+  # IP Address.
+  # ---
+
+  if $bap_show_ip ; then
+    # Let it still be dim?
+    # Then have to add print props back in after reset to keep it dim.
+    bap_print_ps1 " ${bap_ps1_ansi_green}"
+    bap_print_ps1 "${_bap_env_ip_addr_private}"
+    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props} ╱ ${bap_ps1_ansi_blue}"
+    bap_print_ps1 "${_bap_env_ip_addr_public}"
+    bap_print_ps1 "${bap_ps1_ansi_reset}${_bap_print_text_props} "
+  fi
 
   # ---
   # Final Corner.
@@ -316,8 +336,6 @@ bap_output_ps1_dir() {
     # Directory
     # ---
     # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
-    # local ps1_entry_dir=" ${bap_ps1_ansi_blue}${bap_ps1_dir}${bap_ps1_ansi_reset}"
-    #local ps1_path_root="$_bap_path_root_vc"
 
     # Split into root, relative if in a VC dir.
     local ps1_path_parent="$(dirname "$_bap_path_root_vc")"
