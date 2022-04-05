@@ -57,3 +57,17 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+
+# ------------------------------------------------------------------------------
+# Settings, etc.
+# ------------------------------------------------------------------------------
+
+# Show what Environment Tier we're on just before cmd prompt & continuation prompt:
+bap_show_tier=true
+bap_ps1_prompt_info="$dc_tier_short"
+bap_ps2_prompt_info="$dc_tier_short"
+
+# The user/host can be really long so split the IPs to another line to allow room.
+bap_show_ip_in_header=false
+bap_show_ip_in_subheader=true

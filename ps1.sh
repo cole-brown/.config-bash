@@ -28,7 +28,8 @@ bap_ps1_prompt_symbol="❯ "
 bap_ps2_prompt_symbol="$bap_ps1_prompt_symbol"
 
 
-bap_show_ip=true
+bap_show_ip_in_header=true
+bap_show_ip_in_subheader=false
 bap_show_tier=false
 
 
@@ -124,7 +125,7 @@ bap_import() {
   # About Me & Environment
   # ---
   source "${_bap_script_dir}/_usr_env.sh"
-  bap_usr_env_setup "$_bap_script_dir" $bap_show_ip
+  bap_usr_env_setup "$_bap_script_dir" $( $bap_show_ip_in_header || $bap_show_ip_in_subheader )
 
   # ---
   # Version Control
@@ -216,7 +217,7 @@ bap_output_ps1_footer() {
   # ---
   # MIDDLE FILL SHOULD GO HERE!!!
   # ---
-  # But first we need to figure out how wide the left-hand side stuff is...
+  # But first we need to figure out how wide the right-hand side stuff is...
 
   # ---
   # Date & Time : Part 01
@@ -292,12 +293,12 @@ bap_output_ps1_header() {
   # ---
   # MIDDLE FILL SHOULD GO HERE!!!
   # ---
-  # But first we need to figure out how wide the left-hand side stuff is...
+  # But first we need to figure out how wide the right-hand side stuff is...
 
   # ---
-  # Left-Hand Side Stuff.
+  # Right-Hand Side Stuff.
   # ---
-  if $bap_show_ip ; then
+  if $bap_show_ip_in_header ; then
     ps1_entry_raw="${_bap_env_ip_addr_private}╱${_bap_env_ip_addr_public}"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
   fi
@@ -315,7 +316,7 @@ bap_output_ps1_header() {
   # IP Address.
   # ---
 
-  if $bap_show_ip ; then
+  if $bap_show_ip_in_header ; then
     # Let it still be dim?
     # Then have to add print props back in after reset to keep it dim.
     bap_print_ps1 "${_bap_print_text_props_reset}"
@@ -328,6 +329,67 @@ bap_output_ps1_header() {
   # Final Corner.
   # ---
   bap_print_ps1 "╕\n"
+}
+
+
+bap_output_ps1_subheader() {
+  # Do we even have a subheader line?
+  if ! $bap_show_ip_in_subheader; then
+    # It's fine not to have one.
+    return 0
+  fi
+
+  # ---
+  # Left corner of the line...
+  # ---
+  local ps1_entry_raw="├"
+  local -i width_curr=${#ps1_entry_raw}
+  bap_print_ps1 "${_bap_print_text_props}${ps1_entry_raw}"
+
+  # ---
+  # Right-Hand Side Stuff.
+  # ---
+  # None Currently.
+
+  # ---
+  # MIDDLE FILL SHOULD GO HERE!!!
+  # ---
+  # But first we need to figure out how wide the right-hand side stuff is...
+
+  # ---
+  # Right-Hand Side Stuff.
+  # ---
+  if $bap_show_ip_in_subheader ; then
+    ps1_entry_raw="${_bap_env_ip_addr_private}╱${_bap_env_ip_addr_public}"
+    width_curr=$(($width_curr + ${#ps1_entry_raw}))
+  fi
+
+  ps1_entry_raw="┤"
+  width_curr=$(($width_curr + ${#ps1_entry_raw}))
+
+  # ---
+  # MIDDLE FILL DOES GO HERE!!!
+  # ---
+  bap_terminal_width $bap_ps1_max_width
+  bap_print_fill $(($_bap_terminal_width - $width_curr)) ─
+
+  # ---
+  # IP Address.
+  # ---
+
+  if $bap_show_ip_in_subheader ; then
+    # Let it still be dim?
+    # Then have to add print props back in after reset to keep it dim.
+    bap_print_ps1 "${_bap_print_text_props_reset}"
+    bap_print_ps1 "${_bap_env_ip_addr_private}"
+    bap_print_ps1 "${_bap_print_text_props}╱"
+    bap_print_ps1 "${_bap_env_ip_addr_public}"
+  fi
+
+  # ---
+  # Final Corner.
+  # ---
+  bap_print_ps1 "┤\n"
 }
 
 
@@ -401,6 +463,7 @@ bap_output_ps1() {
   fi
 
   bap_output_ps1_header
+  bap_output_ps1_subheader
 
   bap_output_ps1_dir
 
