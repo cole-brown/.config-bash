@@ -37,8 +37,8 @@ if [ "$color_prompt" = yes ]; then
     # ------------------------------
     # OVERRIDE the prompt
     # ------------------------------
-    if [[ -f "$dc_init_path" ]]; then
-        source "$dc_init_path"
+    if [[ -f "${_dc_path_script}/../prompt" ]]; then
+        source "${_dc_path_script}/../prompt"
     fi
     # ------------------------------
     # /OVERRIDE
