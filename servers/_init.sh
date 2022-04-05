@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# Source this file.
 
 
 # ------------------------------------------------------------------------------
@@ -137,7 +137,15 @@ fi
 
 
 # ------------------------------
-# Extra Set-Up
+# Set-Up: Prompt
+# ------------------------------
+if $dc_feature_prompt && [[ -f "${_dc_path_script}/_init.prompt.sh" ]]; then
+    source "${_dc_path_script}/_init.prompt.sh"
+fi
+
+
+# ------------------------------
+# Set-Up: Extra
 # ------------------------------
 # Source user's extra bash set-up if it exists.
 if [[ ! -z "$dc_profile" ]] && [[ -f "${HOME}/.${dc_profile}/.bashrc" ]]; then
