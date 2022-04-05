@@ -89,8 +89,8 @@ dc_print_centered () {
 # Set-Up Secrets
 # ------------------------------
 # Anything I don't want source controlled goes in here:
-if [[ -f "${_dc_path_script}/bash.secret.sh" ]]; then
-    source "${_dc_path_script}/bash.secret.sh"
+if [[ -f "${_dc_path_script}/_secret.sh" ]]; then
+    source "${_dc_path_script}/_secret.sh"
 fi
 
 # ------------------------------
