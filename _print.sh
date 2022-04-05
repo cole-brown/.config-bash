@@ -35,18 +35,13 @@ bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 
 declare -i _bap_terminal_width=-1
 bap_terminal_width() {
-    echo "baptw:"
     local -i width=$(tput cols)
     local -i returncode=$?
     if [[ ! -z "$1" ]]; then
         local -i max=$1
-        echo "  width: $width"
-        echo "  max:   $max"
         _bap_terminal_width=$(( $width > $max ? $max : $width ))
-        echo "  btw:   $_bap_terminal_width"
     else
         _bap_terminal_width=$width
-        echo "  btw:   $_bap_terminal_width"
     fi
     return $returncode
 }
@@ -89,7 +84,7 @@ bap_print_fill () {
 
     # Minimum width of 1.
     if [[ $width -lt 1 ]]; then
-        $width=1
+        width=1
     fi
 
     # ------------------------------
@@ -131,14 +126,9 @@ bap_print_centered () {
     local string="$@"
     local string_width=${#string}
 
-    echo "bpc:"
-    echo "  width: $width"
     # Get actual width to use:
     bap_terminal_width $width
     width=$_bap_terminal_width
-    echo "bpc:"
-    echo "  width: $width"
-    echo "  str.w: $string_width"
 
     # The left side will be the short side if needed.
     local -i pad_left=$(( ($width - $string_width) / 2 ))
