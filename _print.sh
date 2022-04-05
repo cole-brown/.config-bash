@@ -94,13 +94,8 @@ bap_print_fill () {
     # us 2 characters short? So create something long and then trim down...
     local fill_str="$(printf "%*s" $((width + 10)) $fill_char)"
 
-    echo "bpf"
-    echo "  width: $width"
-    echo "  f.str: $fill_str"
-
     # Replace all the spaces with the line char for complete line.
     fill_str=$(echo "${fill_str// /$fill_char}")
-    echo "  f.str: $fill_str"
 
     # Trim down to correct size for print.
     bap_print_ps1 "${fill_str:0:$width}"
