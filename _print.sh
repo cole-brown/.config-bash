@@ -35,13 +35,18 @@ bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 
 declare -i _bap_terminal_width=-1
 bap_terminal_width() {
+    echo "baptw:"
     local -i width=$(tput cols)
     local -i returncode=$?
     if [[ ! -z "$1" ]]; then
         local -i max=$1
+        echo "  width: $width"
+        echo "  max:   $max"
         _bap_terminal_width=$(( $width > $max ? $max : $width ))
+        echo "  btw:   $_bap_terminal_width"
     else
         _bap_terminal_width=$width
+        echo "  btw:   $_bap_terminal_width"
     fi
     return $returncode
 }
@@ -82,6 +87,11 @@ bap_print_fill () {
         return 1
     fi
 
+    # Minimum width of 1.
+    if [[ $width -lt 1 ]]; then
+        $width=1
+    fi
+
     # ------------------------------
     # Create a fill string.
     # ------------------------------
@@ -89,11 +99,16 @@ bap_print_fill () {
     # us 2 characters short? So create something long and then trim down...
     local fill_str="$(printf "%*s" $((width + 10)) $fill_char)"
 
+    echo "bpf"
+    echo "  width: $width"
+    echo "  f.str: $fill_str"
+
     # Replace all the spaces with the line char for complete line.
     fill_str=$(echo "${fill_str// /$fill_char}")
+    echo "  f.str: $fill_str"
 
     # Trim down to correct size for print.
-    bap_print_ps1 "${fill_str:1:$width}"
+    bap_print_ps1 "${fill_str:0:$width}"
 }
 
 
@@ -116,9 +131,14 @@ bap_print_centered () {
     local string="$@"
     local string_width=${#string}
 
+    echo "bpc:"
+    echo "  width: $width"
     # Get actual width to use:
     bap_terminal_width $width
     width=$_bap_terminal_width
+    echo "bpc:"
+    echo "  width: $width"
+    echo "  str.w: $string_width"
 
     # The left side will be the short side if needed.
     local -i pad_left=$(( ($width - $string_width) / 2 ))
