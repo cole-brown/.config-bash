@@ -4,3 +4,4 @@
 tmp/
 
 *.secret.*
+_secret.sh
