@@ -7,6 +7,7 @@
 
 _dc_path_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+dc_print_banner=false
 
 # ------------------------------------------------------------------------------
 # Text Properties
