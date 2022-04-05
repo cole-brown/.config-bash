@@ -98,15 +98,20 @@ fi
 # ------------------------------
 if $dc_print_banner; then
     echo
-    echo -ne "$dc_props_tier"
     dc_string="╶─╼━━━╾─╴"
     dc_print_centered $dc_max_width ${#dc_string} "${dc_props_dim}${dc_string}${dc_props_dim_reset}"
 
     if [[ ! -z "$dc_title" ]]; then
         dc_string="$dc_title"
         dc_print_centered $dc_max_width ${#dc_string} "${dc_string}"
+
+        # Start tier echo w/ separator.
+        echo -ne "$dc_props_tier"
         dc_string="╶─╼━╾─╴"
         dc_print_centered $dc_max_width ${#dc_string} "${dc_props_dim}${dc_string}${dc_props_dim_reset}"
+    else
+        # Start tier echo w/o separator.
+        echo -ne "$dc_props_tier"
     fi
 
     dc_string="$dc_tier_long"
@@ -114,6 +119,7 @@ if $dc_print_banner; then
 
     dc_string="╶─╼━╾─╴"
     dc_print_centered $dc_max_width ${#dc_string} "${dc_props_dim}${dc_string}${dc_props_dim_reset}"
+    echo -ne "$dc_props_reset" # Clear out tier coloring
 
     dc_string="${dc_profile}"
     dc_print_centered $dc_max_width ${#dc_string} "${dc_string}"
