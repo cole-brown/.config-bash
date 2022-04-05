@@ -8,9 +8,14 @@
 dc_props_dim="\e[2m" # dim
 dc_props_dim_reset="\e[22m" # reset dim specifically
 
-dc_props_dev="\e[0;32m"
-dc_props_stg="\e[0;33m"
-dc_props_prd="\e[0;31m"
+# These should be in "_secret.sh", and should set $dc_props_tier if desired.
+# dc_props_dev="\e[0;32m"
+# dc_props_stg="\e[0;33m"
+# dc_props_prd="\e[0;31m"
+
+# This should be defined in "_secret.sh" if different color for tier is desired.
+# dc_props_tier="..."
+
 dc_props_reset="\e[0m"
 
 declare -i dc_max_width=80

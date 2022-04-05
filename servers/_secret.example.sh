@@ -12,6 +12,12 @@
 dc_feature_motd=true
 dc_feature_prompt=false
 
+# Colors for in MotD.
+dc_props_dev="\e[0;32m"
+dc_props_stg="\e[0;33m"
+dc_props_prd="\e[0;31m"
+
+
 # ------------------------------------------------------------------------------
 # Expected Variables
 # ------------------------------------------------------------------------------
