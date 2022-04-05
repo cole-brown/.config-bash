@@ -38,6 +38,7 @@ fi
 
 cat <<EOF >>"$dc_path_bash_init"
 
+# TODO: Make this path relative and use "$HOME/$rel" instead of absolute path "/home/[...]/...]"?
 if [[ -f "$dc_init_path" ]]; then
     source "$dc_init_path"
 fi
