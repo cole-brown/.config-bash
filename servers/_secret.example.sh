@@ -9,8 +9,8 @@
 # ------------------------------------------------------------------------------
 
 # Comment out or set to false to disable.
-dc_print_banner=true
-
+dc_feature_motd=true
+dc_feature_prompt=false
 
 # ------------------------------------------------------------------------------
 # Expected Variables

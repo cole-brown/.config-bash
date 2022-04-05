@@ -7,7 +7,9 @@
 
 _dc_path_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-dc_print_banner=false
+dc_feature_motd=false
+dc_feature_prompt=false
+
 
 # ------------------------------------------------------------------------------
 # Text Properties
@@ -96,7 +98,7 @@ fi
 # ------------------------------
 # Print Info Banner?
 # ------------------------------
-if $dc_print_banner; then
+if $dc_feature_motd; then
     echo
     dc_string="╶─╼━━━╾─╴"
     dc_print_centered $dc_max_width ${#dc_string} "${dc_props_dim}${dc_string}${dc_props_dim_reset}"
