@@ -8,7 +8,7 @@ _install_path_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && p
 
 dc_path_bash_init="$HOME/.bashrc"
 
-dc_init_name=".bash.sh"
+dc_init_name="_init.sh"
 dc_init_path="${_install_path_script}/${dc_init_name}"
 
 if [[ ! -f "$dc_path_bash_init" ]]; then
