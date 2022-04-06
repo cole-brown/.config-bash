@@ -144,7 +144,7 @@ bap_print_centered () {
 
     # 1) '%*.*s' = Spaces for the left padding based on string size.
     # 2) '%s'    = The (centered) string.
-    printf "${bap_text_weak_props}%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
+    printf "%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
 
     # # 3) '%*.*s' = Spaces for the right padding based on string size.
     # # NOTE: 1 & 3 can be different because integer math and centering inexactly
@@ -167,15 +167,15 @@ bap_print_setup() {
     bap_text_weak_props=""
     bap_text_weak_full=""
 
-    # Set our text properties.
-    if $bap_setting_text_weak_dim; then
-        bap_text_weak_props="${bap_text_weak_props}${bap_ps1_ansi_dim}"
-        bap_text_weak_full="${bap_text_weak_full}${bap_ps1_ansi_dim}"
-    fi
-
     # Set optional color to provided color code.
     if [[ ! -z "$bap_setting_text_weak_color" ]]; then
         bap_text_weak_full="${bap_text_weak_full}${bap_setting_text_weak_color}"
+    fi
+
+    # Set dim after setting color or else color won't be dim...
+    if $bap_setting_text_weak_dim; then
+        bap_text_weak_props="${bap_text_weak_props}${bap_ps1_ansi_dim}"
+        bap_text_weak_full="${bap_text_weak_full}${bap_ps1_ansi_dim}"
     fi
 
     return 0

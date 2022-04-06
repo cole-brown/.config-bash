@@ -264,7 +264,7 @@ bap_output_ps1_header() {
     ps1_entry_raw=" ${bap_ps1_os} ═"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-    bap_print_ps1 "${ps1_entry_raw}"
+    bap_print_ps1 "${bap_text_weak_reset}${bap_ps1_ansi_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
   fi
 
   # ---
@@ -274,7 +274,7 @@ bap_output_ps1_header() {
     ps1_entry_raw="${bap_ps1_chroot} ="
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-    bap_print_ps1 "${ps1_entry_raw}"
+    bap_print_ps1 "${bap_text_weak_reset}${bap_ps1_ansi_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
   fi
 
   # ---
@@ -321,14 +321,14 @@ bap_output_ps1_header() {
     # Then have to add print props back in after reset to keep it dim.
     bap_print_ps1 "${bap_text_weak_reset}"
     bap_print_ps1 "${_bap_env_ip_addr_private}"
-    bap_print_ps1 "${bap_text_weak_full}╱"
+    bap_print_ps1 "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
     bap_print_ps1 "${_bap_env_ip_addr_public}"
   fi
 
   # ---
   # Final Corner.
   # ---
-  bap_print_ps1 "╕\n"
+  bap_print_ps1 "${bap_text_weak_full}╕\n"
 }
 
 
@@ -382,14 +382,14 @@ bap_output_ps1_subheader() {
     # Then have to add print props back in after reset to keep it dim.
     bap_print_ps1 "${bap_text_weak_reset}"
     bap_print_ps1 "${_bap_env_ip_addr_private}"
-    bap_print_ps1 "${bap_text_weak_full}╱"
+    bap_print_ps1 "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
     bap_print_ps1 "${_bap_env_ip_addr_public}"
   fi
 
   # ---
   # Final Corner.
   # ---
-  bap_print_ps1 "┤\n"
+  bap_print_ps1 "${bap_text_weak_full}┤\n"
 }
 
 
