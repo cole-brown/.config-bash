@@ -1,5 +1,28 @@
 # Source this file.
 
+
+# ------------------------------------------------------------------------------
+# Settings, etc.
+# ------------------------------------------------------------------------------
+
+bap_path_root="${_dc_path_script}/.."
+source "${bap_path_root}/_ansi_codes.sh"
+bap_ansi_setup "$_bap_script_dir"
+
+# Show what Environment Tier we're on just before cmd prompt & continuation prompt:
+bap_show_tier=true
+bap_ps1_prompt_info="$dc_tier_short"
+bap_ps2_prompt_info="$dc_tier_short"
+
+# The user/host can be really long so split the IPs to another line to allow room.
+bap_show_ip_in_header=false
+bap_show_ip_in_subheader=true
+
+# Have remote servers be purpleish.
+bap_setting_text_weak_color="${bap_ps1_ansi_purple}"
+bap_setting_text_weak_dim=false
+
+
 # ------------------------------------------------------------------------------
 # Prompt (PS1) Section of "~/.bashrc"
 # ------------------------------------------------------------------------------
@@ -37,8 +60,8 @@ if [ "$color_prompt" = yes ]; then
     # ------------------------------
     # OVERRIDE the prompt
     # ------------------------------
-    if [[ -f "${_dc_path_script}/../prompt" ]]; then
-        source "${_dc_path_script}/../prompt"
+    if [[ -f "${bap_path_root}/prompt" ]]; then
+        source "${bap_path_root}/prompt"
     fi
     # ------------------------------
     # /OVERRIDE
@@ -57,17 +80,3 @@ xterm*|rxvt*)
 *)
     ;;
 esac
-
-
-# ------------------------------------------------------------------------------
-# Settings, etc.
-# ------------------------------------------------------------------------------
-
-# Show what Environment Tier we're on just before cmd prompt & continuation prompt:
-bap_show_tier=true
-bap_ps1_prompt_info="$dc_tier_short"
-bap_ps2_prompt_info="$dc_tier_short"
-
-# The user/host can be really long so split the IPs to another line to allow room.
-bap_show_ip_in_header=false
-bap_show_ip_in_subheader=true
