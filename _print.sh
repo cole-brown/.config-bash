@@ -7,18 +7,30 @@
 # ------------------------------
 # Text Properties for the Pretty Printing background stuff.
 # ------------------------------
-# 0 == false, 1 == true
 
-# ASCII box art lines should be dimmed?
-declare -i bap_lines_dim=1
+# ---
+# Variables to Adjust Externally:
+# ---
+bap_setting_text_weak_dim=true # false / true
+bap_setting_text_weak_color="" # $bap_ps1_ansi_[color]
 
 
 # ---
-# All Together:
+# All Together: "Weak Text"
 # ---
-# `bap_lines_dim` et al as PS1/ANSI escape sequences.
-_bap_print_text_props=""
-_bap_print_text_props_reset=""
+# "Weak" because it's supposed to be "background" / "pretty" / etc text for
+# ASCII box art, alignment, etc.
+#
+# `bap_setting_text_weak_dim` et al as PS1/ANSI escape sequences.
+
+# Just properties like dim/underline.
+bap_text_weak_props=""
+
+# Properties and colors.
+bap_text_weak_full=""
+
+# AKA bap_ps1_ansi_reset.
+bap_text_weak_reset="\e[0m" # Reset all colors/formatting.
 
 
 # ------------------------------
@@ -132,7 +144,7 @@ bap_print_centered () {
 
     # 1) '%*.*s' = Spaces for the left padding based on string size.
     # 2) '%s'    = The (centered) string.
-    printf "${_bap_print_text_props}%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
+    printf "${bap_text_weak_props}%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
 
     # # 3) '%*.*s' = Spaces for the right padding based on string size.
     # # NOTE: 1 & 3 can be different because integer math and centering inexactly
@@ -152,13 +164,18 @@ bap_print_setup() {
         return 1
     fi
 
-    _bap_print_text_props=""
-    _bap_print_text_props_reset=""
+    bap_text_weak_props=""
+    bap_text_weak_full=""
 
     # Set our text properties.
-    if (( bap_lines_dim != 0 )); then
-        _bap_print_text_props="${bap_ps1_ansi_dim}"
-        _bap_print_text_props_reset="${bap_ps1_ansi_dim_reset}"
+    if $bap_setting_text_weak_dim; then
+        bap_text_weak_props="${bap_text_weak_props}${bap_ps1_ansi_dim}"
+        bap_text_weak_full="${bap_text_weak_full}${bap_ps1_ansi_dim}"
+    fi
+
+    # Set optional color to provided color code.
+    if [[ ! -z "$bap_setting_text_weak_color" ]]; then
+        bap_text_weak_full="${bap_text_weak_full}${bap_setting_text_weak_color}"
     fi
 
     return 0

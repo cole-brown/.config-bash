@@ -26,7 +26,7 @@ bap_ansi_setup() {
   bap_ansi_green="${bap_ansi_escape}[01;32m"
   bap_ansi_yellow="${bap_ansi_escape}[0;33m"
   bap_ansi_blue="${bap_ansi_escape}[01;34m"
-  bap_ansi_purple="${bap_ansi_escape}[0;35m"
+  bap_ansi_purple="${bap_ansi_escape}[0;35m" # aka magenta?
   bap_ansi_teal="${bap_ansi_escape}[0;36m"
 
   # Inverts foreground and background colors.
