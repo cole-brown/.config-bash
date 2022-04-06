@@ -61,8 +61,8 @@ if [ "$color_prompt" = yes ]; then
     # ------------------------------
     # OVERRIDE the prompt
     # ------------------------------
-    if [[ -f "${bap_path_root}/prompt" ]]; then
-        source "${bap_path_root}/prompt"
+    if [[ -f "${bap_path_root}/init.sh" ]]; then
+        source "${bap_path_root}/init.sh"
     fi
     # ------------------------------
     # /OVERRIDE

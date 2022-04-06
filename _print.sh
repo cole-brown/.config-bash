@@ -11,8 +11,8 @@
 # ---
 # Variables to Adjust Externally:
 # ---
-bap_setting_text_weak_dim=true # false / true
-bap_setting_text_weak_color="" # $bap_ps1_ansi_[color]
+bap_setting_text_weak_dim=${bap_setting_text_weak_dim:-true} # false / true
+bap_setting_text_weak_color="${bap_setting_text_weak_color:-}" # $bap_ps1_ansi_[color]
 
 
 # ---
@@ -24,13 +24,13 @@ bap_setting_text_weak_color="" # $bap_ps1_ansi_[color]
 # `bap_setting_text_weak_dim` et al as PS1/ANSI escape sequences.
 
 # Just properties like dim/underline.
-bap_text_weak_props=""
+bap_text_weak_props="${bap_text_weak_props:-}"
 
 # Properties and colors.
-bap_text_weak_full=""
+bap_text_weak_full="${bap_text_weak_full:-}"
 
 # AKA bap_ps1_ansi_reset.
-bap_text_weak_reset="\e[0m" # Reset all colors/formatting.
+bap_text_weak_reset="${bap_text_weak_reset:-\e[0m}" # Reset all colors/formatting.
 
 
 # ------------------------------

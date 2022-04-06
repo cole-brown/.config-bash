@@ -10,7 +10,7 @@
 # ╚══════════════════════════════════════════════════════════════════════════╝ #
 
 
-_path_root_bap="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+bap_path_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 
 # This is how Ubuntu 20.04 does their colorful PS1 set-up...
@@ -23,11 +23,7 @@ if [ "$color_prompt" = yes ]; then
     #---
     # Modified:
     #---
-
-    source "${_path_root_bap}/ps1.sh"
-    bap_setup "${_path_root_bap}"
-
-    PROMPT_COMMAND=bap_prompt_command
+    source "${bap_path_root}/init.sh"
 
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '

@@ -20,17 +20,17 @@ bap_prev_cmd_exit_quote_left_eqiv="--"
 bap_prev_cmd_exit_quote_right_eqiv="--"
 
 
-bap_ps1_prompt_info="" # Just before `bap_ps1_prompt_symbol`.
-bap_ps2_prompt_info="" # Just before `bap_ps2_prompt_symbol`.
+bap_ps1_prompt_info="${bap_ps1_prompt_info:-}" # Just before `bap_ps1_prompt_symbol`.
+bap_ps2_prompt_info="${bap_ps2_prompt_info:-}" # Just before `bap_ps2_prompt_symbol`.
 
 # bap_ps1_prompt_symbol="\$> "
-bap_ps1_prompt_symbol="❯ "
-bap_ps2_prompt_symbol="$bap_ps1_prompt_symbol"
+bap_ps1_prompt_symbol="${bap_ps1_prompt_symbol:-❯ }"
+bap_ps2_prompt_symbol="${bap_ps2_prompt_symbol:-$bap_ps1_prompt_symbol}"
 
 
-bap_show_ip_in_header=true
-bap_show_ip_in_subheader=false
-bap_show_tier=false
+bap_show_ip_in_header=${bap_show_ip_in_header:-true}
+bap_show_ip_in_subheader=${bap_show_ip_in_subheader:-false}
+bap_show_tier=${bap_show_tier:-false}
 
 
 # ------------------------------------------------------------------------------
