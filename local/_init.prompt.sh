@@ -21,10 +21,8 @@ bap_path_root="${bap_path_this}/.."
 # ------------------------------
 # Load some `bap` variables...
 # ------------------------------
-source "${bap_path_root}/_ansi_codes.sh"
-source "${bap_path_root}/_print.sh"
 
-bap_ansi_setup "$bap_path_root"
+# Currently don't need to since we have only default settings.
 
 
 # ------------------------------
