@@ -82,6 +82,7 @@ bap_cmd_errored() {
     return 1
 }
 
+
 # ------------------------------------------------------------------------------
 # PS0: Runs right /before/ the command is executed.
 # ------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ bap_output_ps1_footer() {
     # ---
     # Error Code
     # ---
-    # `bap_prev_cmd_exit_status` is set in ~bap_prompt_command~.
+    # `bap_prev_cmd_exit_status` is set in `bap_prompt_command`.
     # Display it in the prompt if it's not empty string.
     #   - However, do not display it if the timer is invalid. Invalid timer
     #     suggests the error exit code was from a while ago and thus stale.
@@ -435,12 +436,12 @@ bap_output_ps2() {
 
 
 # ------------------------------------------------------------------------------
-# PS3: Used as prompt for ~select~ statements.
+# PS3: Used as prompt for `select` statements.
 # ------------------------------------------------------------------------------
 
 
 # ------------------------------------------------------------------------------
-# PS4: Prefix for statements during execution trace (~set -x~).
+# PS4: Prefix for statements during execution trace (`set -x`).
 #   - Printed multiple times if multiple levels of indirection.
 #   - Default is: "+ "
 # ------------------------------------------------------------------------------
@@ -451,13 +452,19 @@ bap_output_ps2() {
 # ------------------------------------------------------------------------------
 
 bap_prompt_setup() {
+    # Use `bap` for PS0 (run just before a command is run).
     PS0='$(bap_output_ps0)'
+
+    # Use `bap` for PS1/PS2 (command prompt & continuation prompt).
     PS1='$(bap_output_ps1)'
     PS2='$(bap_output_ps2)'
 
     # Don't have right now but could:
-    # PS3='$(bap_output_ps3)'
-    # PS4='$(bap_output_ps4)'
+    # PS3='$(bap_output_ps3)' # `select` prompt
+    # PS4='$(bap_output_ps4)' # execution trace prefix
+
+    # Hook `bap` into Bash's PROMPT_COMMAND variable.
+    PROMPT_COMMAND=bap_prompt_command
 }
 
 

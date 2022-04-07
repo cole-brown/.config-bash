@@ -46,8 +46,5 @@ source "${bap_path_root}/_vc.sh"
 bap_vc_setup "$bap_path_root"
 
 # Set Bash Prompts to `bap` versions.
-source "${bap_path_root}/ps1.sh"
+source "${bap_path_root}/_prompt.sh"
 bap_prompt_setup "$bap_path_root"
-
-# Hook `bap` into Bash's PROMPT_COMMAND variable.
-PROMPT_COMMAND=bap_prompt_command
