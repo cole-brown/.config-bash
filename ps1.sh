@@ -83,61 +83,8 @@ bap_cmd_errored() {
 }
 
 # ------------------------------------------------------------------------------
-# Import Functions and such.
-# ------------------------------------------------------------------------------
-
-bap_import() {
-  local import_path="$1"
-  source "$import_path/_path.sh"
-
-  # ---
-  # Make sure we know where we are.
-  # ---
-  if ! bap_script_dir "$1"; then
-    return $?
-  fi
-
-  # ------------------------------
-  # PS1 Command Prompt Stuff.
-  # ------------------------------
-
-  # ---
-  # Colors: De-uglifying Color Codes
-  # ---
-  source "${_bap_script_dir}/_ansi_codes.sh"
-  bap_ansi_setup "$_bap_script_dir"
-
-  source "${_bap_script_dir}/_print.sh"
-  if ! bap_print_setup "$_bap_script_dir"; then
-    return $?
-  fi
-
-  # ---
-  # OS
-  # ---
-  source "${_bap_script_dir}/_os.sh"
-  bap_os_setup "$_bap_script_dir"
-
-  source "${_bap_script_dir}/_timer.sh"
-  bap_timer_setup "$_bap_script_dir"
-
-  # ---
-  # About Me & Environment
-  # ---
-  source "${_bap_script_dir}/_usr_env.sh"
-  bap_usr_env_setup "$_bap_script_dir" $( $bap_show_ip_in_header || $bap_show_ip_in_subheader )
-
-  # ---
-  # Version Control
-  # ---
-  source "${_bap_script_dir}/_vc.sh"
-  bap_vc_setup "$_bap_script_dir"
-}
-
-
-# ------------------------------
 # PS0: Runs right /before/ the command is executed.
-# ------------------------------
+# ------------------------------------------------------------------------------
 
 bap_output_ps0() {
   bap_timer_start $_bap_timer_pid
@@ -515,16 +462,6 @@ bap_setup_ps2() {
 # ------------------------------------------------------------------------------
 
 
-# ------------------------------
-# Set-Up / Init for Prompts.
-# ------------------------------
-bap_setup() {
-  local dir="$1"
-  bap_import "$dir"
-  bap_setup_ps0
-  bap_setup_ps1
-  bap_setup_ps2
-}
 
 
 # ------------------------------------------------------------------------------
