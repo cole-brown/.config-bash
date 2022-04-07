@@ -6,10 +6,10 @@
 # ------------------------------------------------------------------------------
 
 # ------------------------------
-# Import
+# Import & Set-Up
 # ------------------------------
 
-bap_init_import() {
+bap_init() {
   local import_path="$1"
   source "$import_path/_path.sh"
 
@@ -49,15 +49,8 @@ bap_init_import() {
   # Version Control
   source "${_bap_script_dir}/_vc.sh"
   bap_vc_setup "$_bap_script_dir"
-}
 
-
-# ------------------------------
-# Set-Up / Init the Prompts.
-# ------------------------------
-
-bap_init_setup() {
-  bap_setup_ps0
-  bap_setup_ps1
-  bap_setup_ps2
+  # Prompts: PS0, PS1, PS2, etc...
+  source "${_bap_script_dir}/ps1.sh"
+  bap_prompt_setup "$_bap_script_dir"
 }
