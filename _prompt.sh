@@ -347,9 +347,9 @@ bap_output_ps1_dir() {
         # Can't use "\w" when we're called every prompt and are explicitly echoing the dir.
 
         # Split into root, relative if in a VC dir.
-        local ps1_path_parent="$(dirname "$_bap_path_root_vc")"
+        local ps1_path_parent="$(bap_pretty_path "$(dirname "$_bap_path_root_vc")")"
         local ps1_path_repo="$(basename "$_bap_path_root_vc")"
-        local ps1_path_rel="$(realpath --relative-to="$_bap_path_root_vc" "$PWD")"
+        local ps1_path_rel="$(bap_pretty_path_relative "$_bap_path_root_vc" "$PWD")"
 
         # Repo's root path one color & relative path a second color.
         bap_print_ps1 "${bap_text_weak_full}├┬ ${bap_text_weak_reset}"
@@ -370,7 +370,7 @@ bap_output_ps1_dir() {
         # ---
 
         # All one color.
-        bap_print_ps1 "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_ansi_blue}${PWD}${bap_ansi_reset}\n"
+        bap_print_ps1 "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_ansi_blue}$(bap_pretty_pwd)${bap_ansi_reset}\n"
     fi
 }
 
