@@ -19,12 +19,9 @@ fi
 # Import & set-up all the BAP functionality, in order.
 # ---
 
-# Colors: De-uglifying Color Codes
-source "${bap_path_root}/_ansi_codes.sh"
+# Colors, Formatting, Printing
+source "${bap_path_root}/_text.sh"
 bap_ansi_setup "$bap_path_root"
-
-# Output Helpers
-source "${bap_path_root}/_print.sh"
 if ! bap_text_setup "$bap_path_root"; then
     return $?
 fi

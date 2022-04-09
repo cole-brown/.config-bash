@@ -150,6 +150,7 @@ bap_ansi_setup() {
     bap_ps1_ansi_strikethrough_reset="${bap_ps1_ansi_start}${bap_ansi_strikethrough_reset}${bap_ps1_ansi_end}"
 }
 
+
 # ------------------------------------------------------------------------------
 # Formatting / Coloring Functions
 # ------------------------------------------------------------------------------

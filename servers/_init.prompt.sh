@@ -7,9 +7,7 @@
 
 bap_path_root="${_dc_path_script}/.."
 
-source "${bap_path_root}/_ansi_codes.sh"
-source "${bap_path_root}/_print.sh"
-
+source "${bap_path_root}/_text.sh"
 bap_ansi_setup "$bap_path_root"
 
 # Show what Environment Tier we're on just before cmd prompt & continuation prompt:
