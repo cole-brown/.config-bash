@@ -21,7 +21,6 @@ fi
 
 # Colors, Formatting, Printing
 source "${bap_path_root}/_text.sh"
-bap_ansi_setup "$bap_path_root"
 if ! bap_text_setup "$bap_path_root"; then
     return $?
 fi

@@ -132,9 +132,9 @@ bap_output_ps1_footer() {
         ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"
+        bap_text_out "${bap_text_fmt_reset}${bap_text_fmt_red}"
         bap_text_out "${bap_prev_cmd_exit_quote_left}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
-        bap_text_out "${bap_ps1_ansi_reset}${bap_text_weak_full}═"
+        bap_text_out "${bap_text_fmt_reset}${bap_text_weak_full}═"
     fi
 
     # ---
@@ -207,7 +207,7 @@ bap_output_ps1_header() {
         ps1_entry_raw=" ${bap_ps1_os} ═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "${bap_text_weak_reset}${bap_ps1_ansi_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
+        bap_text_out "${bap_text_weak_reset}${bap_text_fmt_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
     fi
 
     # ---
@@ -217,7 +217,7 @@ bap_output_ps1_header() {
         ps1_entry_raw="${bap_ps1_chroot} ="
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "${bap_text_weak_reset}${bap_ps1_ansi_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
+        bap_text_out "${bap_text_weak_reset}${bap_text_fmt_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
     fi
 
     # ---
@@ -229,7 +229,7 @@ bap_output_ps1_header() {
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
         bap_text_out " ${bap_text_weak_reset}"
-        bap_text_out "${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
+        bap_text_out "${bap_text_fmt_green}${_bap_env_ident}${bap_text_fmt_reset}"
         bap_text_out " ${bap_text_weak_full}"
     fi
 
@@ -264,7 +264,7 @@ bap_output_ps1_header() {
         # Then have to add print props back in after reset to keep it dim.
         bap_text_out "${bap_text_weak_reset}"
         bap_text_out "${_bap_env_ip_addr_private}"
-        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
+        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_text_fmt_dim}"
         bap_text_out "${_bap_env_ip_addr_public}"
     fi
 
@@ -325,7 +325,7 @@ bap_output_ps1_subheader() {
         # Then have to add print props back in after reset to keep it dim.
         bap_text_out "${bap_text_weak_reset}"
         bap_text_out "${_bap_env_ip_addr_private}"
-        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
+        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_text_fmt_dim}"
         bap_text_out "${_bap_env_ip_addr_public}"
     fi
 
@@ -353,24 +353,24 @@ bap_output_ps1_dir() {
 
         # Repo's root path one color & relative path a second color.
         bap_text_out "${bap_text_weak_full}├┬ ${bap_text_weak_reset}"
-        bap_text_out "${bap_ansi_blue}${ps1_path_parent}/"
+        bap_text_out "${bap_text_fmt_blue}${ps1_path_parent}/"
         # Still blue but also underline the repo name.
-        bap_text_out "${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}"
+        bap_text_out "${bap_text_fmt_underline}${ps1_path_repo}${bap_text_fmt_underline_reset}"
         # Recolor "/relative/path/in/repo" to "version control color".
-        bap_text_out "${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}\n"
+        bap_text_out "${bap_text_fmt_yellow}/${ps1_path_rel}${bap_text_fmt_reset}\n"
 
         # ---
         # Version Control
         # ---
         bap_text_out "${bap_text_weak_full}│└─${bap_text_weak_reset}"
-        bap_text_out "${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}\n"
+        bap_text_out "${bap_text_fmt_yellow}$(bap_ps1_vc_prompt)${bap_text_fmt_reset}\n"
     else
         # ---
         # Directory Only
         # ---
 
         # All one color.
-        bap_text_out "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_ansi_blue}$(bap_pretty_pwd)${bap_ansi_reset}\n"
+        bap_text_out "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_text_fmt_blue}$(bap_pretty_pwd)${bap_text_fmt_reset}\n"
     fi
 }
 

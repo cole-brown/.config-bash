@@ -12,7 +12,7 @@
 # Variables to Adjust Externally:
 # ---
 bap_setting_text_weak_dim=${bap_setting_text_weak_dim:-true} # false / true
-bap_setting_text_weak_color="${bap_setting_text_weak_color:-}" # $bap_ps1_ansi_[color]
+bap_setting_text_weak_color="${bap_setting_text_weak_color:-}" # $bap_text_fmt_[color]
 
 
 # ---
@@ -29,7 +29,7 @@ bap_text_weak_props="${bap_text_weak_props:-}"
 # Properties and colors.
 bap_text_weak_full="${bap_text_weak_full:-}"
 
-# AKA bap_ps1_ansi_reset.
+# AKA bap_text_fmt_reset.
 bap_text_weak_reset="${bap_text_weak_reset:-}" # Reset all colors/formatting.
 
 
@@ -51,110 +51,114 @@ bap_text_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 # TODO: More format codes:
 #   - https://misc.flogisoft.com/bash/tip_colors_and_formatting
 #     - Left off at "8/16 Colors"
-bap_ansi_setup() {
-    # ------------------------------
-    # ANSI Codes
-    # ------------------------------
 
-    # ---
-    # General
-    # ---
-    # These are all just the escape key, basically.
-    # bap_ansi_escape_oct="\033" # octal 33
-    # bap_ansi_escape_hex="\x1b" # hex   1b
-    bap_ansi_escape="\e"
+# ------------------------------
+# ANSI Codes
+# ------------------------------
 
-    bap_ansi_reset="${bap_ansi_escape}[0m"
+# ---
+# General
+# ---
+# These are all just the escape key, basically.
+# _bap_ansi_escape_oct="\033" # octal 33
+# _bap_ansi_escape_hex="\x1b" # hex   1b
+_bap_ansi_escape="\e"
 
-    # ---
-    # Colors
-    # ---
-    bap_ansi_red="${bap_ansi_escape}[0;31m"
-    bap_ansi_green="${bap_ansi_escape}[01;32m"
-    bap_ansi_yellow="${bap_ansi_escape}[0;33m"
-    bap_ansi_blue="${bap_ansi_escape}[01;34m"
-    bap_ansi_purple="${bap_ansi_escape}[0;35m" # aka magenta?
-    bap_ansi_teal="${bap_ansi_escape}[0;36m"
+_bap_ansi_reset="${_bap_ansi_escape}[0m"
 
-    # Inverts foreground and background colors.
-    # AKA "reverse"
-    bap_ansi_invert="${bap_ansi_escape}[7m"
+# ---
+# Colors
+# ---
+_bap_ansi_red="${_bap_ansi_escape}[0;31m"
+_bap_ansi_green="${_bap_ansi_escape}[01;32m"
+_bap_ansi_yellow="${_bap_ansi_escape}[0;33m"
+_bap_ansi_blue="${_bap_ansi_escape}[01;34m"
+_bap_ansi_purple="${_bap_ansi_escape}[0;35m" # aka magenta?
+_bap_ansi_teal="${_bap_ansi_escape}[0;36m"
 
-    # ---
-    # Text Properties
-    # ---
-    bap_ansi_bold="${bap_ansi_escape}[1m"
-    bap_ansi_dim="${bap_ansi_escape}[2m"
-    bap_ansi_italic="${bap_ansi_escape}[3m"
-    bap_ansi_underline="${bap_ansi_escape}[4m"
-    bap_ansi_blink="${bap_ansi_escape}[5m"
-    bap_ansi_hidden="${bap_ansi_escape}[8m" # For e.g. passwords.
-    bap_ansi_strikethrough="${bap_ansi_escape}[9m"
+# Inverts foreground and background colors.
+# AKA "reverse"
+_bap_ansi_invert="${_bap_ansi_escape}[7m"
 
-    bap_ansi_bold_reset="${bap_ansi_escape}[21m"
-    bap_ansi_dim_reset="${bap_ansi_escape}[22m"
-    bap_ansi_italic_reset="${bap_ansi_escape}[23m"
-    bap_ansi_underline_reset="${bap_ansi_escape}[24m"
-    bap_ansi_blink_reset="${bap_ansi_escape}[25m"
-    bap_ansi_hidden_reset="${bap_ansi_escape}[28m"
-    bap_ansi_strikethrough_reset="${bap_ansi_escape}[29m"
+# ---
+# Text Properties
+# ---
+_bap_ansi_bold="${_bap_ansi_escape}[1m"
+_bap_ansi_dim="${_bap_ansi_escape}[2m"
+_bap_ansi_italic="${_bap_ansi_escape}[3m"
+_bap_ansi_underline="${_bap_ansi_escape}[4m"
+_bap_ansi_blink="${_bap_ansi_escape}[5m"
+_bap_ansi_hidden="${_bap_ansi_escape}[8m" # For e.g. passwords.
+_bap_ansi_strikethrough="${_bap_ansi_escape}[9m"
 
-    # ------------------------------
-    # PS1 Codes
-    # ------------------------------
-    # "\[" + ANSI Code + "\]"
-    # The escaped brackets help Bash count how long the prompt actually is or
-    # something. Can't use "\[" and "\]" because they just show up as-is, but the
-    # equivalent "\001" and \"002" work fine.*
-    # bap_ps1_ansi_start="\["
-    # bap_ps1_ansi_end="\]"
-    bap_ps1_ansi_start="\001"
-    bap_ps1_ansi_end="\002"
-    # *They work fine until you try displaying a number right after one...
-    # "\002" + "0.3" = "\0020.3" --> ".3" (the 0 gets eaten by the "\002" escape sequence).
+_bap_ansi_bold_reset="${_bap_ansi_escape}[21m"
+_bap_ansi_dim_reset="${_bap_ansi_escape}[22m"
+_bap_ansi_italic_reset="${_bap_ansi_escape}[23m"
+_bap_ansi_underline_reset="${_bap_ansi_escape}[24m"
+_bap_ansi_blink_reset="${_bap_ansi_escape}[25m"
+_bap_ansi_hidden_reset="${_bap_ansi_escape}[28m"
+_bap_ansi_strikethrough_reset="${_bap_ansi_escape}[29m"
 
-    # ---
-    # General
-    # ---
-    bap_ps1_ansi_reset="${bap_ps1_ansi_start}${bap_ansi_reset}${bap_ps1_ansi_end}"
+# ------------------------------
+# PS1 Codes
+# ------------------------------
+# "\[" + ANSI Code + "\]"
+# The escaped brackets help Bash count how long the prompt actually is or
+# something. Can't use "\[" and "\]" because they just show up as-is, but the
+# equivalent "\001" and \"002" work fine.*
+# bap_text_fmt_escape_start="\["
+# bap_text_fmt_escape_end="\]"
+bap_text_fmt_escape_start="\001"
+bap_text_fmt_escape_end="\002"
+# *They work fine until you try displaying a number right after one...
+# "\002" + "0.3" = "\0020.3" --> ".3" (the 0 gets eaten by the "\002" escape sequence).
 
-    # ---
-    # Colors
-    # ---
-    bap_ps1_ansi_red="${bap_ps1_ansi_start}${bap_ansi_red}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_green="${bap_ps1_ansi_start}${bap_ansi_green}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_yellow="${bap_ps1_ansi_start}${bap_ansi_yellow}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_blue="${bap_ps1_ansi_start}${bap_ansi_blue}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_purple="${bap_ps1_ansi_start}${bap_ansi_purple}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_teal="${bap_ps1_ansi_start}${bap_ansi_teal}${bap_ps1_ansi_end}"
+# ---
+# General
+# ---
+bap_text_fmt_reset="${bap_text_fmt_escape_start}${_bap_ansi_reset}${bap_text_fmt_escape_end}"
 
-    bap_ps1_ansi_invert="${bap_ps1_ansi_start}${bap_ansi_invert}${bap_ps1_ansi_end}"
+# ---
+# Colors
+# ---
+bap_text_fmt_red="${bap_text_fmt_escape_start}${_bap_ansi_red}${bap_text_fmt_escape_end}"
+bap_text_fmt_green="${bap_text_fmt_escape_start}${_bap_ansi_green}${bap_text_fmt_escape_end}"
+bap_text_fmt_yellow="${bap_text_fmt_escape_start}${_bap_ansi_yellow}${bap_text_fmt_escape_end}"
+bap_text_fmt_blue="${bap_text_fmt_escape_start}${_bap_ansi_blue}${bap_text_fmt_escape_end}"
+bap_text_fmt_purple="${bap_text_fmt_escape_start}${_bap_ansi_purple}${bap_text_fmt_escape_end}"
+bap_text_fmt_teal="${bap_text_fmt_escape_start}${_bap_ansi_teal}${bap_text_fmt_escape_end}"
 
-    # ---
-    # Text Properties
-    # ---
-    bap_ps1_ansi_bold="${bap_ps1_ansi_start}${bap_ansi_bold}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_dim="${bap_ps1_ansi_start}${bap_ansi_dim}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_italic="${bap_ps1_ansi_start}${bap_ansi_italic}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_underline="${bap_ps1_ansi_start}${bap_ansi_underline}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_blink="${bap_ps1_ansi_start}${bap_ansi_blink}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_hidden="${bap_ps1_ansi_start}${bap_ansi_hidden}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_strikethrough="${bap_ps1_ansi_start}${bap_ansi_strikethrough}${bap_ps1_ansi_end}"
+bap_text_fmt_invert="${bap_text_fmt_escape_start}${_bap_ansi_invert}${bap_text_fmt_escape_end}"
 
-    bap_ps1_ansi_bold_reset="${bap_ps1_ansi_start}${bap_ansi_bold_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_dim_reset="${bap_ps1_ansi_start}${bap_ansi_dim_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_italic_reset="${bap_ps1_ansi_start}${bap_ansi_italic_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_underline_reset="${bap_ps1_ansi_start}${bap_ansi_underline_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_blink_reset="${bap_ps1_ansi_start}${bap_ansi_blink_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_hidden_reset="${bap_ps1_ansi_start}${bap_ansi_hidden_reset}${bap_ps1_ansi_end}"
-    bap_ps1_ansi_strikethrough_reset="${bap_ps1_ansi_start}${bap_ansi_strikethrough_reset}${bap_ps1_ansi_end}"
-}
+# ---
+# Text Properties
+# ---
+bap_text_fmt_bold="${bap_text_fmt_escape_start}${_bap_ansi_bold}${bap_text_fmt_escape_end}"
+bap_text_fmt_dim="${bap_text_fmt_escape_start}${_bap_ansi_dim}${bap_text_fmt_escape_end}"
+bap_text_fmt_italic="${bap_text_fmt_escape_start}${_bap_ansi_italic}${bap_text_fmt_escape_end}"
+bap_text_fmt_underline="${bap_text_fmt_escape_start}${_bap_ansi_underline}${bap_text_fmt_escape_end}"
+bap_text_fmt_blink="${bap_text_fmt_escape_start}${_bap_ansi_blink}${bap_text_fmt_escape_end}"
+bap_text_fmt_hidden="${bap_text_fmt_escape_start}${_bap_ansi_hidden}${bap_text_fmt_escape_end}"
+bap_text_fmt_strikethrough="${bap_text_fmt_escape_start}${_bap_ansi_strikethrough}${bap_text_fmt_escape_end}"
+
+bap_text_fmt_bold_reset="${bap_text_fmt_escape_start}${_bap_ansi_bold_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_dim_reset="${bap_text_fmt_escape_start}${_bap_ansi_dim_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_italic_reset="${bap_text_fmt_escape_start}${_bap_ansi_italic_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_underline_reset="${bap_text_fmt_escape_start}${_bap_ansi_underline_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_blink_reset="${bap_text_fmt_escape_start}${_bap_ansi_blink_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_hidden_reset="${bap_text_fmt_escape_start}${_bap_ansi_hidden_reset}${bap_text_fmt_escape_end}"
+bap_text_fmt_strikethrough_reset="${bap_text_fmt_escape_start}${_bap_ansi_strikethrough_reset}${bap_text_fmt_escape_end}"
 
 
 # ------------------------------------------------------------------------------
 # Formatting / Coloring Functions
 # ------------------------------------------------------------------------------
 
+# TODO: Does this strip the \001 & \002 sequences?
+# TODO: Either:
+# TODO:   1) Delete this? Not using?
+# TODO:   2) Rename to `bap_text_fmt_strip`?
+#
 # Strip ANSI (and PS1) escape sequences from input string.
 _bap_ansi_strip=""
 bap_ansi_strip() {
@@ -305,15 +309,9 @@ bap_text_out_centered () {
 # ------------------------------------------------------------------------------
 
 bap_text_setup() {
-    # Need ANSI codes.
-    if [[ -z "${bap_ansi_dim}" ]]; then
-        echo "Can't find \`bap\`s ANSI codes..."
-        return 1
-    fi
-
     bap_text_weak_props=""
     bap_text_weak_full=""
-    bap_text_weak_reset="$bap_ps1_ansi_reset"
+    bap_text_weak_reset="$bap_text_fmt_reset"
 
     # set optional color to provided color code.
     if [[ ! -z "$bap_setting_text_weak_color" ]]; then
@@ -322,8 +320,8 @@ bap_text_setup() {
 
     # Set dim after setting color or else color won't be dim...
     if $bap_setting_text_weak_dim; then
-        bap_text_weak_props="${bap_text_weak_props}${bap_ps1_ansi_dim}"
-        bap_text_weak_full="${bap_text_weak_full}${bap_ps1_ansi_dim}"
+        bap_text_weak_props="${bap_text_weak_props}${bap_text_fmt_dim}"
+        bap_text_weak_full="${bap_text_weak_full}${bap_text_fmt_dim}"
     fi
 
     return 0

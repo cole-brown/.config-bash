@@ -8,7 +8,6 @@
 bap_path_root="${_dc_path_script}/.."
 
 source "${bap_path_root}/_text.sh"
-bap_ansi_setup "$bap_path_root"
 
 # Show what Environment Tier we're on just before cmd prompt & continuation prompt:
 bap_show_tier=true
@@ -20,7 +19,7 @@ bap_show_ip_in_header=false
 bap_show_ip_in_subheader=true
 
 # Have remote servers be purpleish.
-bap_setting_text_weak_color="${bap_ps1_ansi_purple}"
+bap_setting_text_weak_color="${bap_text_fmt_purple}"
 bap_setting_text_weak_dim=false
 
 
