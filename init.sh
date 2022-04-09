@@ -25,7 +25,7 @@ bap_ansi_setup "$bap_path_root"
 
 # Output Helpers
 source "${bap_path_root}/_print.sh"
-if ! bap_print_setup "$bap_path_root"; then
+if ! bap_text_setup "$bap_path_root"; then
     return $?
 fi
 

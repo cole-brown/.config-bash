@@ -110,7 +110,7 @@ bap_output_ps1_footer() {
     # ------------------------------
     # Line -1: Blank line to separate out teh actual command a bit.
     # ------------------------------
-    bap_print_newline
+    bap_text_out_newline
 
     # ------------------------------
     # Line 00: Footer
@@ -118,7 +118,7 @@ bap_output_ps1_footer() {
       # Left corner of the line...
     ps1_entry_raw="╘"
     local -i width_curr=${#ps1_entry_raw}
-    bap_print_ps1 "${bap_text_weak_full}${ps1_entry_raw}"
+    bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
 
     # ---
     # Error Code
@@ -132,9 +132,9 @@ bap_output_ps1_footer() {
         ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_print_ps1 "${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"
-        bap_print_ps1 "${bap_prev_cmd_exit_quote_left}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
-        bap_print_ps1 "${bap_ps1_ansi_reset}${bap_text_weak_full}═"
+        bap_text_out "${bap_ps1_ansi_reset}${bap_ps1_ansi_red}"
+        bap_text_out "${bap_prev_cmd_exit_quote_left}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
+        bap_text_out "${bap_ps1_ansi_reset}${bap_text_weak_full}═"
     fi
 
     # ---
@@ -148,13 +148,13 @@ bap_output_ps1_footer() {
         ps1_entry_raw="⧗${_bap_timer_duration}"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_print_ps1 "⧗${bap_text_weak_reset}"
-        bap_print_ps1 "${_bap_timer_duration}"
+        bap_text_out "⧗${bap_text_weak_reset}"
+        bap_text_out "${_bap_timer_duration}"
 
         # Print spacer.
         ps1_entry_raw="═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
-        bap_print_ps1 "${bap_text_weak_full}${ps1_entry_raw}"
+        bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
     fi
 
     # ---
@@ -175,20 +175,20 @@ bap_output_ps1_footer() {
     # MIDDLE FILL DOES GO HERE!!!
     # ---
     bap_terminal_width $bap_ps1_max_width
-    bap_print_fill $(($_bap_terminal_width - $width_curr)) ═
+    bap_text_out_fill $(($_bap_terminal_width - $width_curr)) ═
 
     # ---
     # Date & Time : Part 02
     # ---
     # Actually print it (w/ ending corner).
-    bap_print_ps1 "◷[${bap_text_weak_reset}"
-    bap_print_ps1 "${_bap_env_timestamp}"
-    bap_print_ps1 "${bap_text_weak_full}]╛\n"
+    bap_text_out "◷[${bap_text_weak_reset}"
+    bap_text_out "${_bap_env_timestamp}"
+    bap_text_out "${bap_text_weak_full}]╛\n"
 }
 
 
 bap_output_ps1_interim() {
-    bap_print_centered $bap_ps1_max_width "╶─╼━╾─╴"
+    bap_text_out_centered $bap_ps1_max_width "╶─╼━╾─╴"
 }
 
 
@@ -198,7 +198,7 @@ bap_output_ps1_header() {
     # ---
     local ps1_entry_raw="╒"
     local -i width_curr=${#ps1_entry_raw}
-    bap_print_ps1 "${bap_text_weak_full}${ps1_entry_raw}"
+    bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
 
     # ---
     # OS info.
@@ -207,7 +207,7 @@ bap_output_ps1_header() {
         ps1_entry_raw=" ${bap_ps1_os} ═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_print_ps1 "${bap_text_weak_reset}${bap_ps1_ansi_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
+        bap_text_out "${bap_text_weak_reset}${bap_ps1_ansi_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
     fi
 
     # ---
@@ -217,7 +217,7 @@ bap_output_ps1_header() {
         ps1_entry_raw="${bap_ps1_chroot} ="
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_print_ps1 "${bap_text_weak_reset}${bap_ps1_ansi_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
+        bap_text_out "${bap_text_weak_reset}${bap_ps1_ansi_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
     fi
 
     # ---
@@ -228,9 +228,9 @@ bap_output_ps1_header() {
         ps1_entry_raw=" ${_bap_env_ident} "
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_print_ps1 " ${bap_text_weak_reset}"
-        bap_print_ps1 "${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
-        bap_print_ps1 " ${bap_text_weak_full}"
+        bap_text_out " ${bap_text_weak_reset}"
+        bap_text_out "${bap_ps1_ansi_green}${_bap_env_ident}${bap_ps1_ansi_reset}"
+        bap_text_out " ${bap_text_weak_full}"
     fi
 
     # ---
@@ -253,7 +253,7 @@ bap_output_ps1_header() {
     # MIDDLE FILL DOES GO HERE!!!
     # ---
     bap_terminal_width $bap_ps1_max_width
-    bap_print_fill $(($_bap_terminal_width - $width_curr)) ═
+    bap_text_out_fill $(($_bap_terminal_width - $width_curr)) ═
 
     # ---
     # IP Address.
@@ -262,16 +262,16 @@ bap_output_ps1_header() {
     if $bap_show_ip_in_header ; then
         # Let it still be dim?
         # Then have to add print props back in after reset to keep it dim.
-        bap_print_ps1 "${bap_text_weak_reset}"
-        bap_print_ps1 "${_bap_env_ip_addr_private}"
-        bap_print_ps1 "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
-        bap_print_ps1 "${_bap_env_ip_addr_public}"
+        bap_text_out "${bap_text_weak_reset}"
+        bap_text_out "${_bap_env_ip_addr_private}"
+        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
+        bap_text_out "${_bap_env_ip_addr_public}"
     fi
 
     # ---
     # Final Corner.
     # ---
-    bap_print_ps1 "${bap_text_weak_full}╕\n"
+    bap_text_out "${bap_text_weak_full}╕\n"
 }
 
 
@@ -287,7 +287,7 @@ bap_output_ps1_subheader() {
     # ---
     local ps1_entry_raw="├"
     local -i width_curr=${#ps1_entry_raw}
-    bap_print_ps1 "${bap_text_weak_full}${ps1_entry_raw}"
+    bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
 
     # ---
     # Right-Hand Side Stuff.
@@ -314,7 +314,7 @@ bap_output_ps1_subheader() {
     # MIDDLE FILL DOES GO HERE!!!
     # ---
     bap_terminal_width $bap_ps1_max_width
-    bap_print_fill $(($_bap_terminal_width - $width_curr)) ─
+    bap_text_out_fill $(($_bap_terminal_width - $width_curr)) ─
 
     # ---
     # IP Address.
@@ -323,16 +323,16 @@ bap_output_ps1_subheader() {
     if $bap_show_ip_in_subheader ; then
         # Let it still be dim?
         # Then have to add print props back in after reset to keep it dim.
-        bap_print_ps1 "${bap_text_weak_reset}"
-        bap_print_ps1 "${_bap_env_ip_addr_private}"
-        bap_print_ps1 "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
-        bap_print_ps1 "${_bap_env_ip_addr_public}"
+        bap_text_out "${bap_text_weak_reset}"
+        bap_text_out "${_bap_env_ip_addr_private}"
+        bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_ps1_ansi_dim}"
+        bap_text_out "${_bap_env_ip_addr_public}"
     fi
 
     # ---
     # Final Corner.
     # ---
-    bap_print_ps1 "${bap_text_weak_full}┤\n"
+    bap_text_out "${bap_text_weak_full}┤\n"
 }
 
 
@@ -352,25 +352,25 @@ bap_output_ps1_dir() {
         local ps1_path_rel="$(bap_pretty_path_relative "$_bap_path_root_vc" "$PWD")"
 
         # Repo's root path one color & relative path a second color.
-        bap_print_ps1 "${bap_text_weak_full}├┬ ${bap_text_weak_reset}"
-        bap_print_ps1 "${bap_ansi_blue}${ps1_path_parent}/"
+        bap_text_out "${bap_text_weak_full}├┬ ${bap_text_weak_reset}"
+        bap_text_out "${bap_ansi_blue}${ps1_path_parent}/"
         # Still blue but also underline the repo name.
-        bap_print_ps1 "${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}"
+        bap_text_out "${bap_ansi_underline}${ps1_path_repo}${bap_ansi_underline_reset}"
         # Recolor "/relative/path/in/repo" to "version control color".
-        bap_print_ps1 "${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}\n"
+        bap_text_out "${bap_ansi_yellow}/${ps1_path_rel}${bap_ansi_reset}\n"
 
         # ---
         # Version Control
         # ---
-        bap_print_ps1 "${bap_text_weak_full}│└─${bap_text_weak_reset}"
-        bap_print_ps1 "${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}\n"
+        bap_text_out "${bap_text_weak_full}│└─${bap_text_weak_reset}"
+        bap_text_out "${bap_ansi_yellow}$(bap_ps1_vc_prompt)${bap_ansi_reset}\n"
     else
         # ---
         # Directory Only
         # ---
 
         # All one color.
-        bap_print_ps1 "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_ansi_blue}$(bap_pretty_pwd)${bap_ansi_reset}\n"
+        bap_text_out "${bap_text_weak_full}├─ ${bap_text_weak_reset}${bap_ansi_blue}$(bap_pretty_pwd)${bap_ansi_reset}\n"
     fi
 }
 
@@ -388,8 +388,8 @@ bap_output_ps1_prompt() {
     fi
 
     # Final PS1 line: The Prompt.
-    bap_print_ps1 "${bap_text_weak_full}└┤${bap_text_weak_reset}"
-    bap_print_ps1 "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"
+    bap_text_out "${bap_text_weak_full}└┤${bap_text_weak_reset}"
+    bap_text_out "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"
 }
 
 
@@ -429,9 +429,9 @@ bap_output_ps2() {
     # PS1:
     #             "..."
     #             "${bap_text_weak_full}└┤${bap_text_weak_reset}"
-    bap_print_ps1 "${bap_text_weak_full} │${bap_text_weak_reset}"
+    bap_text_out "${bap_text_weak_full} │${bap_text_weak_reset}"
     #             "${bap_ps1_prompt_info}${bap_ps1_prompt_symbol}"
-    bap_print_ps1 "${bap_ps2_prompt_info}${bap_ps2_prompt_symbol}"
+    bap_text_out "${bap_ps2_prompt_info}${bap_ps2_prompt_symbol}"
 }
 
 

@@ -38,12 +38,13 @@ bap_text_weak_reset="${bap_text_weak_reset:-}" # Reset all colors/formatting.
 # ------------------------------
 
 # Just a big buffer of spaces to trim down to what we want.
-bap_padding_spaces="$(printf '%0.1s' ' '{1..200})"
+bap_text_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 
 
 # ------------------------------------------------------------------------------
 # Terminal Info
 # ------------------------------------------------------------------------------
+# TODO: move to _terminal.sh?
 
 declare -i _bap_terminal_width=-1
 bap_terminal_width() {
@@ -77,17 +78,17 @@ bap_terminal_height() {
 # Printing / Output : Basic
 # ------------------------------------------------------------------------------
 
-bap_print_newline() {
+bap_text_out_newline() {
     echo
 }
 
 
-bap_print_ps1() {
+bap_text_out() {
     echo -ne "${@}"
 }
 
 
-bap_print_fill () {
+bap_text_out_fill () {
     local -i width=$1
     local fill_char="$2"
     if [[ ${#fill_char} -ne 1 ]]; then
@@ -110,7 +111,7 @@ bap_print_fill () {
     fill_str=$(echo "${fill_str// /$fill_char}")
 
     # Trim down to correct size for print.
-    bap_print_ps1 "${fill_str:0:$width}"
+    bap_text_out "${fill_str:0:$width}"
 }
 
 
@@ -127,7 +128,7 @@ bap_print_fill () {
 #     '    xx    '
 #     '   xxx    '
 #     '   xxxx   '
-bap_print_centered () {
+bap_text_out_centered () {
     local -i width=$1
     shift
     local string="$@"
@@ -144,12 +145,12 @@ bap_print_centered () {
 
     # 1) '%*.*s' = Spaces for the left padding based on string size.
     # 2) '%s'    = The (centered) string.
-    printf "%*.*s%s\n" 0 "$pad_left" "$bap_padding_spaces" "$string"
+    printf "%*.*s%s\n" 0 "$pad_left" "$bap_text_padding_spaces" "$string"
 
     # # 3) '%*.*s' = Spaces for the right padding based on string size.
     # # NOTE: 1 & 3 can be different because integer math and centering inexactly
     # #   (e.g. centering a 1 char string to 4 width).
-    # printf '%*.*s%s%*.*s\n' 0 "$pad_left" "$bap_padding_spaces" "$string" 0 "$pad_right" "$bap_padding_spaces"
+    # printf '%*.*s%s%*.*s\n' 0 "$pad_left" "$bap_text_padding_spaces" "$string" 0 "$pad_right" "$bap_text_padding_spaces"
 }
 
 
@@ -157,7 +158,7 @@ bap_print_centered () {
 # Set-Up
 # ------------------------------------------------------------------------------
 
-bap_print_setup() {
+bap_text_setup() {
     # Need ANSI codes.
     if [[ -z "${bap_ansi_dim}" ]]; then
         echo "Can't find \`bap\`s ANSI codes..."
