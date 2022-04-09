@@ -30,7 +30,7 @@ bap_text_weak_props="${bap_text_weak_props:-}"
 bap_text_weak_full="${bap_text_weak_full:-}"
 
 # AKA bap_ps1_ansi_reset.
-bap_text_weak_reset="${bap_text_weak_reset:-\e[0m}" # Reset all colors/formatting.
+bap_text_weak_reset="${bap_text_weak_reset:-}" # Reset all colors/formatting.
 
 
 # ------------------------------
@@ -166,8 +166,9 @@ bap_print_setup() {
 
     bap_text_weak_props=""
     bap_text_weak_full=""
+    bap_text_weak_reset="$bap_ps1_ansi_reset"
 
-    # Set optional color to provided color code.
+    # set optional color to provided color code.
     if [[ ! -z "$bap_setting_text_weak_color" ]]; then
         bap_text_weak_full="${bap_text_weak_full}${bap_setting_text_weak_color}"
     fi
