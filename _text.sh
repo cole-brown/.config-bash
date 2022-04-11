@@ -196,7 +196,7 @@ bap_ansi_strip() {
 # ------------------------------------------------------------------------------
 # TODO: move to _terminal.sh?
 
-declare -i _bap_terminal_width=-1
+_bap_terminal_width=-1
 bap_terminal_width() {
     local -i width=$(tput cols)
     local -i returncode=$?
@@ -210,7 +210,7 @@ bap_terminal_width() {
 }
 
 
-declare -i _bap_terminal_height=-1
+_bap_terminal_height=-1
 bap_terminal_height() {
     local -i height=$(tput lines)
     local -i returncode=$?

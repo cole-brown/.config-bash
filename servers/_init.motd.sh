@@ -18,7 +18,7 @@ dc_props_dim_reset="\e[22m" # reset dim specifically
 
 dc_props_reset="\e[0m"
 
-declare -i dc_max_width=80
+dc_max_width=80
 
 # Just a big buffer of spaces to trim down to what we want.
 dc_padding_spaces="$(printf '%0.1s' ' '{1..200})"
@@ -28,7 +28,7 @@ dc_padding_spaces="$(printf '%0.1s' ' '{1..200})"
 # Functions: Pretty Priting
 # ------------------------------------------------------------------------------
 
-declare -i _dc_terminal_width=-1
+_dc_terminal_width=-1
 dc_terminal_width() {
     local -i width=$(tput cols)
     local -i returncode=$?
