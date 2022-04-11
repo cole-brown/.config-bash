@@ -32,7 +32,7 @@ declare -i _dc_terminal_width=-1
 dc_terminal_width() {
     local -i width=$(tput cols)
     local -i returncode=$?
-    if [[ ! -z "$1" ]]; then
+    if [[ -n "$1" ]]; then
         local -i max=$1
         _dc_terminal_width=$(( $width > $max ? $max : $width ))
     else
@@ -71,7 +71,7 @@ echo
 dc_string="╶─╼━━━╾─╴"
 dc_print_centered $dc_max_width ${#dc_string} "${dc_props_dim}${dc_string}${dc_props_dim_reset}"
 
-if [[ ! -z "$dc_title" ]]; then
+if [[ -n "$dc_title" ]]; then
     dc_string="$dc_title"
     dc_print_centered $dc_max_width ${#dc_string} "${dc_string}"
 

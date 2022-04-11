@@ -60,6 +60,6 @@ fi
 # Set-Up: Extras?
 # ------------------------------
 # Source user's extra bash set-up if it exists.
-if [[ ! -z "$dc_profile" ]] && [[ -f "${HOME}/.${dc_profile}/.bashrc" ]]; then
+if [[ -n "$dc_profile" ]] && [[ -f "${HOME}/.${dc_profile}/.bashrc" ]]; then
     source "${HOME}/.${dc_profile}/.bashrc"
 fi

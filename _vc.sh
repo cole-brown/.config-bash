@@ -90,7 +90,7 @@ bap_ps1_vc_prompt() {
         # Other version control systems checked here as needed.
     fi
 
-    if [ ! -z "${bap_ps1_vc_value}" ]; then
+    if [[ -n "${bap_ps1_vc_value}" ]]; then
         echo "${bap_ps1_vc_value}"
     fi
     # else nothing to report

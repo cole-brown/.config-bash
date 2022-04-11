@@ -200,7 +200,7 @@ declare -i _bap_terminal_width=-1
 bap_terminal_width() {
     local -i width=$(tput cols)
     local -i returncode=$?
-    if [[ ! -z "$1" ]]; then
+    if [[ -n "$1" ]]; then
         local -i max=$1
         _bap_terminal_width=$(( $width > $max ? $max : $width ))
     else
@@ -214,7 +214,7 @@ declare -i _bap_terminal_height=-1
 bap_terminal_height() {
     local -i height=$(tput lines)
     local -i returncode=$?
-    if [[ ! -z "$1" ]]; then
+    if [[ -n "$1" ]]; then
         local -i max=$1
         _bap_terminal_height=$(( $height > $max ? $max : $height ))
     else
@@ -314,7 +314,7 @@ bap_text_setup() {
     bap_text_weak_reset="$bap_text_fmt_reset"
 
     # set optional color to provided color code.
-    if [[ ! -z "$bap_setting_text_weak_color" ]]; then
+    if [[ -n "$bap_setting_text_weak_color" ]]; then
         bap_text_weak_full="${bap_text_weak_full}${bap_setting_text_weak_color}"
     fi
 

@@ -74,7 +74,7 @@ bap_cmd_errored() {
 
     # Command can only error if it ran.
     if bap_cmd_ran $_bap_timer_pid ; then
-        test ! -z "$bap_prev_cmd_exit_status"
+        test -n "$bap_prev_cmd_exit_status"
         return $?
     fi
 
@@ -143,7 +143,7 @@ bap_output_ps1_footer() {
     # TODO: Maybe nicer format for longer durations? "⧗hh:mm:ss.mmm"
     #   - Currently just "s.mmm"
     bap_timer_stop $_bap_timer_pid
-    if [[ ! -z "$_bap_timer_duration" ]]; then
+    if [[ -n "$_bap_timer_duration" ]]; then
         # Print timer.
         ps1_entry_raw="⧗${_bap_timer_duration}"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
@@ -203,7 +203,7 @@ bap_output_ps1_header() {
     # ---
     # OS info.
     # ---
-    if [[ ! -z "$bap_ps1_os" ]]; then
+    if [[ -n "$bap_ps1_os" ]]; then
         ps1_entry_raw=" ${bap_ps1_os} ═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
@@ -213,7 +213,7 @@ bap_output_ps1_header() {
     # ---
     # Optional CHROOT info.
     # ---
-    if [[ ! -z "${bap_ps1_chroot}" ]]; then
+    if [[ -n "${bap_ps1_chroot}" ]]; then
         ps1_entry_raw="${bap_ps1_chroot} ="
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
@@ -224,7 +224,7 @@ bap_output_ps1_header() {
     # User info.
     # ---
     bap_env_ident
-    if [[ ! -z "${_bap_env_ident}" ]]; then
+    if [[ -n "${_bap_env_ident}" ]]; then
         ps1_entry_raw=" ${_bap_env_ident} "
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
