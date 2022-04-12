@@ -11,7 +11,8 @@
 # Settings for the End User
 # ------------------------------------------------------------------------------
 
-bap_ps1_max_width=80
+# bap_ps1_max_width=80
+bap_ps1_max_width=150
 
 bap_prev_cmd_exit_quote_left="「"
 bap_prev_cmd_exit_quote_right="」"

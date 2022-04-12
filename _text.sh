@@ -66,23 +66,38 @@ _bap_ansi_escape="\e"
 
 _bap_ansi_reset="${_bap_ansi_escape}[0m"
 
+
 # ---
 # Colors
 # ---
+_bap_ansi_default="${_bap_ansi_escape}[0;39m"
+
+_bap_ansi_black="${_bap_ansi_escape}[0;30m"
 _bap_ansi_red="${_bap_ansi_escape}[0;31m"
 _bap_ansi_green="${_bap_ansi_escape}[01;32m"
 _bap_ansi_yellow="${_bap_ansi_escape}[0;33m"
 _bap_ansi_blue="${_bap_ansi_escape}[01;34m"
-_bap_ansi_purple="${_bap_ansi_escape}[0;35m" # aka magenta?
-_bap_ansi_teal="${_bap_ansi_escape}[0;36m"
+_bap_ansi_magenta="${_bap_ansi_escape}[0;35m" # or purpleish..
+_bap_ansi_cyan="${_bap_ansi_escape}[0;36m"    # or teal...
+_bap_ansi_gray="${_bap_ansi_escape}[0;90m"
+
+_bap_ansi_red_light="${_bap_ansi_escape}[0;91m"
+_bap_ansi_green_light="${_bap_ansi_escape}[01;92m"
+_bap_ansi_yellow_light="${_bap_ansi_escape}[0;93m"
+_bap_ansi_blue_light="${_bap_ansi_escape}[01;94m"
+_bap_ansi_magenta_light="${_bap_ansi_escape}[0;95m" # aka magenta?
+_bap_ansi_cyan_light="${_bap_ansi_escape}[0;96m"
+_bap_ansi_gray_light="${_bap_ansi_escape}[0;37m"
+
+
+# ---
+# Text Properties
+# ---
 
 # Inverts foreground and background colors.
 # AKA "reverse"
 _bap_ansi_invert="${_bap_ansi_escape}[7m"
 
-# ---
-# Text Properties
-# ---
 _bap_ansi_bold="${_bap_ansi_escape}[1m"
 _bap_ansi_dim="${_bap_ansi_escape}[2m"
 _bap_ansi_italic="${_bap_ansi_escape}[3m"
@@ -98,6 +113,7 @@ _bap_ansi_underline_reset="${_bap_ansi_escape}[24m"
 _bap_ansi_blink_reset="${_bap_ansi_escape}[25m"
 _bap_ansi_hidden_reset="${_bap_ansi_escape}[28m"
 _bap_ansi_strikethrough_reset="${_bap_ansi_escape}[29m"
+
 
 # ------------------------------
 # PS1 Codes
@@ -118,21 +134,35 @@ bap_text_fmt_escape_end="\002"
 # ---
 bap_text_fmt_reset="${bap_text_fmt_escape_start}${_bap_ansi_reset}${bap_text_fmt_escape_end}"
 
+
 # ---
 # Colors
 # ---
+bap_text_fmt_default="${bap_text_fmt_escape_start}${_bap_ansi_default}${bap_text_fmt_escape_end}"
+
+bap_text_fmt_black="${bap_text_fmt_escape_start}${_bap_ansi_black}${bap_text_fmt_escape_end}"
 bap_text_fmt_red="${bap_text_fmt_escape_start}${_bap_ansi_red}${bap_text_fmt_escape_end}"
 bap_text_fmt_green="${bap_text_fmt_escape_start}${_bap_ansi_green}${bap_text_fmt_escape_end}"
 bap_text_fmt_yellow="${bap_text_fmt_escape_start}${_bap_ansi_yellow}${bap_text_fmt_escape_end}"
 bap_text_fmt_blue="${bap_text_fmt_escape_start}${_bap_ansi_blue}${bap_text_fmt_escape_end}"
-bap_text_fmt_purple="${bap_text_fmt_escape_start}${_bap_ansi_purple}${bap_text_fmt_escape_end}"
-bap_text_fmt_teal="${bap_text_fmt_escape_start}${_bap_ansi_teal}${bap_text_fmt_escape_end}"
+bap_text_fmt_magenta="${bap_text_fmt_escape_start}${_bap_ansi_magenta}${bap_text_fmt_escape_end}"
+bap_text_fmt_cyan="${bap_text_fmt_escape_start}${_bap_ansi_cyan}${bap_text_fmt_escape_end}"
+bap_text_fmt_gray="${bap_text_fmt_escape_start}${_bap_ansi_gray}${bap_text_fmt_escape_end}"
 
-bap_text_fmt_invert="${bap_text_fmt_escape_start}${_bap_ansi_invert}${bap_text_fmt_escape_end}"
+bap_text_fmt_red_light="${bap_text_fmt_escape_start}${_bap_ansi_red_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_green_light="${bap_text_fmt_escape_start}${_bap_ansi_green_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_yellow_light="${bap_text_fmt_escape_start}${_bap_ansi_yellow_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_blue_light="${bap_text_fmt_escape_start}${_bap_ansi_blue_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_magenta_light="${bap_text_fmt_escape_start}${_bap_ansi_magenta_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_cyan_light="${bap_text_fmt_escape_start}${_bap_ansi_cyan_light}${bap_text_fmt_escape_end}"
+bap_text_fmt_gray_light="${bap_text_fmt_escape_start}${_bap_ansi_gray_light}${bap_text_fmt_escape_end}"
+
 
 # ---
 # Text Properties
 # ---
+bap_text_fmt_invert="${bap_text_fmt_escape_start}${_bap_ansi_invert}${bap_text_fmt_escape_end}"
+
 bap_text_fmt_bold="${bap_text_fmt_escape_start}${_bap_ansi_bold}${bap_text_fmt_escape_end}"
 bap_text_fmt_dim="${bap_text_fmt_escape_start}${_bap_ansi_dim}${bap_text_fmt_escape_end}"
 bap_text_fmt_italic="${bap_text_fmt_escape_start}${_bap_ansi_italic}${bap_text_fmt_escape_end}"

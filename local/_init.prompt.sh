@@ -22,14 +22,30 @@ bap_path_root="${bap_path_this}/.."
 # Load some `bap` variables...
 # ------------------------------
 
-# Currently don't need to since we have only default settings.
+source "${bap_path_root}/_text.sh"
 
 
 # ------------------------------
 # Configure `bap` settings...
 # ------------------------------
 
-# Currently all settings are default for local.
+case "$TERM" in
+    *kitty*)
+        # ---
+        # `Kitty` terminal
+        # ---
+        # `Kitty` terminal doesn't dim the ASCII box lines ("╘══"), so try gray instead?
+        bap_setting_text_weak_color="${bap_text_fmt_gray}"
+        bap_setting_text_weak_dim=false
+        ;;
+    *)
+        # ---
+        # `Gnome Terminal`
+        # ---
+        # Use the defaults.
+        ;;
+esac
+
 
 
 # ------------------------------------------------------------------------------

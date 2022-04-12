@@ -19,7 +19,7 @@ bap_show_ip_in_header=false
 bap_show_ip_in_subheader=true
 
 # Have remote servers be purpleish.
-bap_setting_text_weak_color="${bap_text_fmt_purple}"
+bap_setting_text_weak_color="${bap_text_fmt_magenta}"
 bap_setting_text_weak_dim=false
 
 
