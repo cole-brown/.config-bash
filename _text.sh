@@ -129,6 +129,13 @@ bap_text_fmt_escape_end="\002"
 # *They work fine until you try displaying a number right after one...
 # "\002" + "0.3" = "\0020.3" --> ".3" (the 0 gets eaten by the "\002" escape sequence).
 
+bap_terminal_bell="\a"
+
+# Title of Terminal
+bap_terminal_title_start="${bap_text_fmt_escape_start}\e]0;"
+bap_terminal_title_end="${bap_terminal_bell}${bap_text_fmt_escape_end}"
+
+
 # ---
 # General
 # ---

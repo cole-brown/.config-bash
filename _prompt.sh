@@ -469,6 +469,16 @@ bap_prompt_setup() {
 }
 
 
+bap_title_setup() {
+    # Assume PS1 is set up and add title info to PS1.
+
+    # Ubuntu's default title is:
+    # PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+
+    local title="${bap_terminal_title_start}${bap_ps1_chroot}\u@\h: \w${bap_terminal_title_end}"
+}
+
+
 # ------------------------------------------------------------------------------
 # Prompt Builder
 # ------------------------------------------------------------------------------
