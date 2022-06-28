@@ -9,7 +9,7 @@ _bap_ip_private_get="1.1.1.1" # Cloudflare
 # Other IPs can be found:
 #   https://docs.pi-hole.net/guides/dns/upstream-dns-providers/
 
-_bap_ip_public_cmd="curl --silent ipinfo.io/ip"
+_bap_ip_public_cmd="curl --silent ipinfo.io/ip 2>/dev/null"
 
 
 # ------------------------------------------------------------------------------
@@ -75,14 +75,20 @@ bap_env_ip_addr_private() {
         # This command return something like:
         #   $ ip route get 8.8.8.8
         #   > 8.8.8.8 via 192.168.254.254 dev enx381428bf81ce src 192.168.254.74 uid 1001
-        local ip_route="$(ip route get $_bap_ip_private_get)"
+        local ip_route="$(ip route get $_bap_ip_private_get 2>/dev/null)"
         exitcode=$?
         if [[ $exitcode -ne 0 ]]; then
-          return $exitcode
+            _bap_env_ip_addr_private="¿local-ip?"
+            return $exitcode
         fi
 
         # Now trim down to private IP: grab only first line, then get the correct field number.
         _bap_env_ip_addr_private="$(echo "$ip_route" | head -1 | cut -d' ' -f7)"
+
+        # Found nothing?
+        if [[ -z "$_bap_env_ip_addr_private" ]]; then
+            _bap_env_ip_addr_private="¿local-ip?"
+        fi
     else
         _bap_env_ip_addr_private=""
     fi
@@ -101,6 +107,9 @@ bap_env_ip_addr_public() {
         # Expect the command to do all the work to trim, etc.
         _bap_env_ip_addr_public="$($_bap_ip_public_cmd)"
         exitcode=$?
+        if [[ -z "$_bap_env_ip_addr_public" ]]; then
+            _bap_env_ip_addr_public="¿public-ip?"
+        fi
         if [[ $exitcode -ne 0 ]]; then
             return $exitcode
         fi
