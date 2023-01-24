@@ -14,12 +14,18 @@
 # bap_ps1_max_width=80
 bap_ps1_max_width=150
 
-bap_prev_cmd_exit_quote_left="「"
-bap_prev_cmd_exit_quote_right="」"
-# Those are 2 chars wide:
-bap_prev_cmd_exit_quote_left_eqiv="--"
-bap_prev_cmd_exit_quote_right_eqiv="--"
 
+# 2 chars wide:
+# bap_prev_cmd_exit_quote_left="「"
+# bap_prev_cmd_exit_quote_right="」"
+# bap_prev_cmd_exit_quote_left_equiv="--"
+# bap_prev_cmd_exit_quote_right_equiv="--"
+
+# 1 char wide:
+bap_prev_cmd_exit_quote_left="╡"
+bap_prev_cmd_exit_quote_right="╞"
+bap_prev_cmd_exit_quote_left_equiv="╡"
+bap_prev_cmd_exit_quote_right_equiv="╞"
 
 bap_ps1_prompt_info="${bap_ps1_prompt_info:-}" # Just before `bap_ps1_prompt_symbol`.
 bap_ps2_prompt_info="${bap_ps2_prompt_info:-}" # Just before `bap_ps2_prompt_symbol`.
@@ -114,12 +120,12 @@ bap_output_ps1_footer() {
     bap_text_out_newline
 
     # ------------------------------
-    # Line 00: Footer
+    # Line 00: Left Hand Side
     # ------------------------------
       # Left corner of the line...
-    ps1_entry_raw="╘"
+    ps1_entry_raw="╘═"
     local -i width_curr=${#ps1_entry_raw}
-    bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
+    bap_text_out "${bap_text_weak_full}╘═"
 
     # ---
     # Error Code
@@ -129,13 +135,19 @@ bap_output_ps1_footer() {
     #   - However, do not display it if the timer is invalid. Invalid timer
     #     suggests the error exit code was from a while ago and thus stale.
     if bap_cmd_errored $_bap_timer_pid; then
-        # Print error code & spacer.
-        ps1_entry_raw="${bap_prev_cmd_exit_quote_left_eqiv}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_eqiv}═"
+        # Figure out how wide this is without color codes...
+        ps1_entry_raw="${bap_prev_cmd_exit_quote_left_equiv}⏎${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right_equiv}═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "${bap_text_fmt_reset}${bap_text_fmt_red}"
-        bap_text_out "${bap_prev_cmd_exit_quote_left}${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
-        bap_text_out "${bap_text_fmt_reset}${bap_text_weak_full}═"
+        # Colorize the quotes.
+        # bap_text_out "${bap_text_fmt_reset}${bap_text_fmt_red}"
+        # bap_text_out "${bap_prev_cmd_exit_quote_left}⏎${bap_prev_cmd_exit_status}${bap_prev_cmd_exit_quote_right}"
+        # bap_text_out "${bap_text_fmt_reset}${bap_text_weak_full}═"
+
+        # Colorize only the exit code.
+        bap_text_out "${bap_prev_cmd_exit_quote_left}${bap_text_fmt_reset}${bap_text_fmt_red}"
+        bap_text_out "⏎${bap_prev_cmd_exit_status}${bap_text_fmt_reset}${bap_text_weak_full}"
+        bap_text_out "${bap_prev_cmd_exit_quote_right}═"
     fi
 
     # ---
@@ -146,18 +158,21 @@ bap_output_ps1_footer() {
     bap_timer_stop $_bap_timer_pid
     if [[ -n "$_bap_timer_duration" ]]; then
         # Print timer.
-        ps1_entry_raw="⧗${_bap_timer_duration}"
+        ps1_entry_raw="╡⧗${_bap_timer_duration}"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "⧗${bap_text_weak_reset}"
-        bap_text_out "${_bap_timer_duration}"
+        bap_text_out "╡⧗${bap_text_weak_reset}${bap_text_fmt_dim}"
+        bap_text_out "${_bap_timer_duration}${bap_text_fmt_dim_reset}"
 
         # Print spacer.
-        ps1_entry_raw="═"
+        ps1_entry_raw="╞═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
-        bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
+        bap_text_out "${bap_text_weak_full}╞═"
     fi
 
+    # ------------------------------
+    # Line 00: Middle
+    # ------------------------------
     # ---
     # MIDDLE FILL SHOULD GO HERE!!!
     # ---
@@ -169,7 +184,7 @@ bap_output_ps1_footer() {
     # Figure out width so we can make fill.
     bap_env_timestamp
     # Including the ending corner.
-    ps1_entry_raw="◷[${_bap_env_timestamp}]╛"
+    ps1_entry_raw="╡◷${_bap_env_timestamp}╞═╛"
     width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
     # ---
@@ -178,13 +193,16 @@ bap_output_ps1_footer() {
     bap_terminal_width $bap_ps1_max_width
     bap_text_out_fill $(($_bap_terminal_width - $width_curr)) ═
 
+    # ------------------------------
+    # Line 00: Right-Hand Side
+    # ------------------------------
     # ---
     # Date & Time : Part 02
     # ---
     # Actually print it (w/ ending corner).
-    bap_text_out "◷[${bap_text_weak_reset}"
-    bap_text_out "${_bap_env_timestamp}"
-    bap_text_out "${bap_text_weak_full}]╛\n"
+    bap_text_out "╡◷${bap_text_weak_reset}${bap_text_fmt_dim}"
+    bap_text_out "${_bap_env_timestamp}${bap_text_fmt_dim_reset}"
+    bap_text_out "${bap_text_weak_full}╞═╛\n"
 }
 
 
@@ -194,31 +212,27 @@ bap_output_ps1_interim() {
 
 
 bap_output_ps1_header() {
+    # ------------------------------
+    # Left-Hand Side
+    # ------------------------------
+
     # ---
     # Left corner of the line...
     # ---
     local ps1_entry_raw="╒"
     local -i width_curr=${#ps1_entry_raw}
-    bap_text_out "${bap_text_weak_full}${ps1_entry_raw}"
-
-    # ---
-    # OS info.
-    # ---
-    if [[ -n "$bap_ps1_os" ]]; then
-        ps1_entry_raw=" ${bap_ps1_os} ═"
-        width_curr=$(($width_curr + ${#ps1_entry_raw}))
-
-        bap_text_out "${bap_text_weak_reset}${bap_text_fmt_dim} ${bap_ps1_os} ${bap_text_weak_full}═"
-    fi
+    bap_text_out "${bap_text_weak_full}╒"
 
     # ---
     # Optional CHROOT info.
     # ---
     if [[ -n "${bap_ps1_chroot}" ]]; then
-        ps1_entry_raw="${bap_ps1_chroot} ="
+        ps1_entry_raw="╡${bap_ps1_chroot}╞═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out "${bap_text_weak_reset}${bap_text_fmt_dim}${bap_ps1_chroot} ${bap_text_weak_full}="
+        bap_text_out "╡${bap_text_weak_reset}${bap_text_fmt_dim}"
+        bap_text_out "${bap_ps1_chroot}"
+        bap_text_out "${bap_text_weak_full}╞═"
     fi
 
     # ---
@@ -226,13 +240,17 @@ bap_output_ps1_header() {
     # ---
     bap_env_ident
     if [[ -n "${_bap_env_ident}" ]]; then
-        ps1_entry_raw=" ${_bap_env_ident} "
+        ps1_entry_raw="╡${_bap_env_ident}╞═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
 
-        bap_text_out " ${bap_text_weak_reset}"
-        bap_text_out "${bap_text_fmt_green}${_bap_env_ident}${bap_text_fmt_reset}"
-        bap_text_out " ${bap_text_weak_full}"
+        bap_text_out "╡${bap_text_weak_reset}${bap_text_fmt_green}"
+        bap_text_out "${_bap_env_ident}${bap_text_fmt_reset}"
+        bap_text_out "${bap_text_weak_full}╞═"
     fi
+
+    # ------------------------------
+    # Middle
+    # ------------------------------
 
     # ---
     # MIDDLE FILL SHOULD GO HERE!!!
@@ -240,10 +258,22 @@ bap_output_ps1_header() {
     # But first we need to figure out how wide the right-hand side stuff is...
 
     # ---
-    # Right-Hand Side Stuff.
+    # So... Right-Hand Side Length Calculations...
+    # ---
+
+    # ---
+    # OS info
+    # ---
+    if [[ -n "$bap_ps1_os_distro" ]]; then
+        ps1_entry_raw="╡${bap_ps1_os_distro}╱${bap_ps1_os_code}╞═"
+        width_curr=$(($width_curr + ${#ps1_entry_raw}))
+    fi
+
+    # ---
+    # IP Addresses
     # ---
     if $bap_show_ip_in_header ; then
-        ps1_entry_raw="${_bap_env_ip_addr_private}╱${_bap_env_ip_addr_public}"
+        ps1_entry_raw="╡${_bap_env_ip_addr_private}╱${_bap_env_ip_addr_public}╞═"
         width_curr=$(($width_curr + ${#ps1_entry_raw}))
     fi
 
@@ -256,17 +286,31 @@ bap_output_ps1_header() {
     bap_terminal_width $bap_ps1_max_width
     bap_text_out_fill $(($_bap_terminal_width - $width_curr)) ═
 
+    # ------------------------------
+    # Right-Hand Side Stuff
+    # ------------------------------
+
+    # ---
+    # OS info
+    # ---
+    if [[ -n "$bap_ps1_os_distro" ]]; then
+        bap_text_out "╡${bap_text_weak_reset}${bap_text_fmt_dim}"
+        bap_text_out "${bap_ps1_os_distro}${bap_text_fmt_dim_reset}${bap_text_weak_full}"
+        bap_text_out "╱${bap_text_weak_reset}${bap_text_fmt_dim}"
+        bap_text_out "${bap_ps1_os_code}${bap_text_fmt_dim_reset}${bap_text_weak_full}"
+        bap_text_out "╞═"
+    fi
+
     # ---
     # IP Address.
     # ---
 
     if $bap_show_ip_in_header ; then
-        # Let it still be dim?
-        # Then have to add print props back in after reset to keep it dim.
-        bap_text_out "${bap_text_weak_reset}"
-        bap_text_out "${_bap_env_ip_addr_private}"
+        bap_text_out "╡${bap_text_weak_reset}${bap_text_fmt_dim}"
+        bap_text_out "${_bap_env_ip_addr_private}${bap_text_fmt_dim_reset}"
         bap_text_out "${bap_text_weak_full}╱${bap_text_weak_reset}${bap_text_fmt_dim}"
-        bap_text_out "${_bap_env_ip_addr_public}"
+        bap_text_out "${_bap_env_ip_addr_public}${bap_text_fmt_dim_reset}"
+        bap_text_out "${bap_text_weak_full}╞═"
     fi
 
     # ---
